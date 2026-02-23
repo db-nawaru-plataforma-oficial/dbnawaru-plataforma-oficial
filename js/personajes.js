@@ -73,6 +73,7 @@ document.getElementById('closeModal')?.addEventListener('click', () => {
 document.getElementById('imagenes')?.addEventListener('change', (e) => {
     const files = Array.from(e.target.files);
     const preview = document.getElementById('imagePreview');
+    
     files.forEach(file => {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -131,6 +132,7 @@ document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
         caracteristicas,
         imagenes: imagenesUrls
     };
+    
     try {
         if (currentItem) {
             const { error } = await supabase
