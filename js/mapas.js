@@ -73,6 +73,7 @@ document.getElementById('imagen')?.addEventListener('change', (e) => {
         reader.readAsDataURL(file);
     }
 });
+
 document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -153,6 +154,7 @@ async function editItem(id) {
     
     document.getElementById('modal').classList.add('active');
 }
+
 async function deleteItem(id) {
     if (!confirm('¿Estás seguro de eliminar este mapa?')) return;
     
