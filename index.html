@@ -1,41 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nawaru - World Portal</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div id="login-container">
-        </div>
-
-    <div id="app-content" style="display:none;">
-        <nav class="nav-bar">
-            <div class="nav-inner">
-                <h1 class="logo">NAWARU</h1>
-                <div class="nav-menu">
-                    <button onclick="changeTab('reinos')">Reinos</button>
-                    <button onclick="changeTab('personajes')">Personajes</button>
-                    <button onclick="changeTab('razas')">Razas</button>
-                    <button onclick="logout()">Salir</button>
-                </div>
-            </div>
-        </nav>
-
-        <main class="feed-layout">
-            <section id="admin-panel" class="card post-editor" style="display:none;">
-                <h3 id="editor-title">Nuevo Registro</h3>
-                <div id="form-fields"></div>
-                <button class="save-btn" onclick="saveNewEntry()">Publicar</button>
-            </section>
-
-            <div id="content-feed"></div>
-        </main>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js"></script>
-    <script src="app.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mundo Épico</title>
+    <link rel="preconnect" href__="https://fonts.googleapis.com" />
+    <link href__="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
