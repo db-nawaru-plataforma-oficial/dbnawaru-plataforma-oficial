@@ -1,31 +1,26 @@
+// Reemplaza el bloque de guardado en personajes.js
 document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Bloquear el botón para evitar múltiples envíos
+    // 1. Bloqueamos el botón para evitar que se quede pegada la página por clics repetidos
     const submitBtn = e.target.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Subiendo información...';
+    submitBtn.textContent = 'Guardando (No cierre la página)...';
 
-    const files = Array.from(document.getElementById('imagenes').files);
-    let imagenesUrls = currentItem?.imagenes || []; // Mantener imágenes si estamos editando
+    const imagenesFiles = Array.from(document.getElementById('imagenes').files);
+    let imagenesUrls = currentItem?.imagenes || [];
 
     try {
-        // PROCESO DE SUBIDA DE IMÁGENES
-        for (const file of files) {
-            // Crear un nombre único para evitar errores de duplicado
-            const fileExt = file.name.split('.').pop();
-            const fileName = `pj_${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-
-            const { data: uploadData, error: uploadError } = await supabase.storage
+        // 2. USAR FOR...OF (Esto sí espera a que cada imagen suba)
+        for (const file of imagenesFiles) {
+            const fileName = `pj_${Date.now()}_${Math.random().toString(36).substr(2, 5)}_${file.name}`;
+            
+            const { data, error: uploadError } = await supabase.storage
                 .from('imagenes')
                 .upload(fileName, file);
 
-            if (uploadError) {
-                console.error('Error al subir imagen:', uploadError.message);
-                continue; // Si una falla, intenta con la siguiente
-            }
+            if (uploadError) throw uploadError;
 
-            // Obtener la URL pública de la imagen recién subida
             const { data: { publicUrl } } = supabase.storage
                 .from('imagenes')
                 .getPublicUrl(fileName);
@@ -33,7 +28,6 @@ document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
             imagenesUrls.push(publicUrl);
         }
 
-        // PREPARAR DATOS PARA LA TABLA
         const itemData = {
             nombre: document.getElementById('nombre').value,
             alias: document.getElementById('alias').value,
@@ -41,28 +35,28 @@ document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
             poder: document.getElementById('poder').value,
             habilidades: document.getElementById('habilidades').value,
             caracteristicas: document.getElementById('caracteristicas').value,
-            imagenes: imagenesUrls // IMPORTANTE: Debe ser un array de textos en Supabase
+            imagenes: imagenesUrls
         };
 
-        let result;
+        // 3. Guardar en base de datos
+        let res;
         if (currentItem) {
-            // Actualizar existente
-            result = await supabase.from('personajes').update(itemData).eq('id', currentItem.id);
+            res = await supabase.from('personajes').update(itemData).eq('id', currentItem.id);
         } else {
-            // Insertar nuevo
-            result = await supabase.from('personajes').insert([itemData]);
+            res = await supabase.from('personajes').insert([itemData]);
         }
 
-        if (result.error) throw result.error;
+        if (res.error) throw res.error;
 
-        alert('¡Personaje guardado con éxito!');
-        document.getElementById('modal').classList.remove('active');
-        loadPersonajes(); // Recargar la lista
+        // 4. Éxito: cerrar y limpiar
+        alert('¡Guardado con éxito!');
+        location.reload(); // Esto refresca la página y limpia el estado
 
     } catch (error) {
-        console.error('Error crítico:', error);
-        alert('No se pudo guardar: ' + error.message);
+        console.error('Error detallado:', error);
+        alert('Error al guardar: ' + error.message);
     } finally {
+        // 5. Siempre rehabilitar el botón si algo falla
         submitBtn.disabled = false;
         submitBtn.textContent = 'Guardar';
     }
