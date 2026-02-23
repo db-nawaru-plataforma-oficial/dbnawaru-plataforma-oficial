@@ -4,17 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nawaru - Personajes</title>
-    <link rel="stylesheet" href__="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
-                <a href__="index.html" class="logo-text">NAWARU</a>
-            </div>
+            <div class="nav-logo"><a href="index.html" class="logo-text">NAWARU</a></div>
             <div class="nav-actions">
                 <button class="btn-logout" id="logoutBtn" style="display: none;">Cerrar Sesión</button>
-                <a href__="admin.html" class="login-icon" id="loginIcon">
+                <a href="admin.html" class="login-icon" id="loginIcon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
@@ -23,61 +21,25 @@
             </div>
         </div>
     </nav>
-
     <div class="container">
         <div class="page-header">
-            <div class="page-title">
-                <span class="page-icon">👥</span>
-                <h1>Personajes</h1>
-            </div>
+            <div class="page-title"><span class="page-icon">👥</span><h1>Personajes</h1></div>
             <button class="btn-add" id="addBtn" style="display: none;">+ Agregar</button>
         </div>
-
         <div id="loading" class="loading">Cargando...</div>
         <div id="content" class="content-list"></div>
     </div>
-
     <div id="modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">Agregar Personaje</h2>
-                <button class="modal-close" id="closeModal">&times;</button>
-            </div>
+            <div class="modal-header"><h2>Agregar Personaje</h2><button class="modal-close" id="closeModal">&times;</button></div>
             <form id="itemForm" class="modal-form">
-                <div class="form-group">
-                    <label>Nombre</label>
-                    <input type="text" id="nombre" required>
-                </div>
-                <div class="form-group">
-                    <label>Alias</label>
-                    <input type="text" id="alias">
-                </div>
-                <div class="form-group">
-                    <label>Personalidad</label>
-                    <textarea id="personalidad" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Poder</label>
-                    <input type="text" id="poder">
-                </div>
-                <div class="form-group">
-                    <label>Habilidades</label>
-                    <textarea id="habilidades" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Características</label>
-                    <textarea id="caracteristicas" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Imágenes (puedes subir varias)</label>
-                    <input type="file" id="imagenes" accept="image/*" multiple>
-                    <div id="imagePreview" class="image-preview"></div>
-                </div>
+                <div class="form-group"><label>Nombre</label><input type="text" id="nombre" required></div>
+                <div class="form-group"><label>Poder</label><input type="text" id="poder"></div>
+                <div class="form-group"><label>Imágenes</label><input type="file" id="imagenes" accept="image/*" multiple></div>
                 <button type="submit" class="btn-primary">Guardar</button>
             </form>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
