@@ -82,6 +82,7 @@ document.getElementById('imagenes')?.addEventListener('change', (e) => {
         reader.readAsDataURL(file);
     });
 });
+
 document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -161,7 +162,8 @@ async function editItem(id) {
     
     const preview = document.getElementById('imagePreview');
     preview.innerHTML = '';
-      if (data.imagenes && data.imagenes.length > 0) {
+    
+    if (data.imagenes && data.imagenes.length > 0) {
         data.imagenes.forEach(img => {
             const div = document.createElement('div');
             div.className = 'image-preview-item';
