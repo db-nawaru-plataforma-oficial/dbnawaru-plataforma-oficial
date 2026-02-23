@@ -58,7 +58,8 @@ document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
     const descripcion = document.getElementById('descripcion').value;
     
     const itemData = { nombre, descripcion };
-  try {
+    
+    try {
         if (currentItem) {
             const { error } = await supabase
                 .from('razas')
