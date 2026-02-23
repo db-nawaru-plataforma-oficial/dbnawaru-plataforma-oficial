@@ -1,215 +1,86 @@
-let currentItem = null;
-let currentImages = [];
-
-async function loadPersonajes() {
-    const loading = document.getElementById('loading');
-    const content = document.getElementById('content');
-    
-    try {
-        const { data, error } = await supabase
-            .from('personajes')
-            .select('*')
-            .order('created_at', { ascending: false });
-        
-        if (error) throw error;
-        
-        loading.style.display = 'none';
-        
-        if (data.length === 0) {
-            content.innerHTML = '<p class="loading">No hay personajes registrados</p>';
-            return;
-        }
-        
-        content.innerHTML = data.map(personaje => `
-            <div class="content-card">
-                ${personaje.imagenes && personaje.imagenes.length > 0 ? `
-                    <div class="content-card-images">
-                        ${personaje.imagenes.slice(0, 4).map((img, idx) => `
-                            <div class="content-card-image">
-                                <img src="${img}" alt="${personaje.nombre}">
-                                ${personaje.imagenes.length > 4 && idx === 3 ? 
-                                    `<div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;font-weight:bold;">+${personaje.imagenes.length - 4}</div>` 
-                                : ''}
-                            </div>
-                        `).join('')}
-                    </div>
-                ` : ''}
-                <div class="content-card-body">
-                    <h3 class="content-card-title">${personaje.nombre}</h3>
-                    ${personaje.alias ? `<div class="content-card-field"><strong>Alias:</strong> ${personaje.alias}</div>` : ''}
-                    ${personaje.personalidad ? `<div class="content-card-field"><strong>Personalidad:</strong> ${personaje.personalidad}</div>` : ''}
-                    ${personaje.poder ? `<div class="content-card-field"><strong>Poder:</strong> ${personaje.poder}</div>` : ''}
-                    ${personaje.habilidades ? `<div class="content-card-field"><strong>Habilidades:</strong> ${personaje.habilidades}</div>` : ''}
-                    ${personaje.caracteristicas ? `<div class="content-card-field"><strong>Características:</strong> ${personaje.caracteristicas}</div>` : ''}
-                </div>
-                ${isAdmin() ? `
-                    <div class="content-card-actions">
-                        <button class="btn-edit" onclick="editItem(${personaje.id})">✏️ Editar</button>
-                        <button class="btn-delete" onclick="deleteItem(${personaje.id})">🗑️ Eliminar</button>
-                    </div>
-                ` : ''}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nawaru - Personajes</title>
+    <link rel="stylesheet" href__="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href__="index.html" class="logo-text">NAWARU</a>
             </div>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Error:', error);
-        content.innerHTML = '<p class="loading">Error al cargar los datos</p>';
-    }
-}
+            <div class="nav-actions">
+                <button class="btn-logout" id="logoutBtn" style="display: none;">Cerrar Sesión</button>
+                <a href__="admin.html" class="login-icon" id="loginIcon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </nav>
 
-document.getElementById('addBtn')?.addEventListener('click', () => {
-    currentItem = null;
-    currentImages = [];
-    document.getElementById('modalTitle').textContent = 'Agregar Personaje';
-    document.getElementById('itemForm').reset();
-    document.getElementById('imagePreview').innerHTML = '';
-    document.getElementById('modal').classList.add('active');
-});
+    <div class="container">
+        <div class="page-header">
+            <div class="page-title">
+                <span class="page-icon">👥</span>
+                <h1>Personajes</h1>
+            </div>
+            <button class="btn-add" id="addBtn" style="display: none;">+ Agregar</button>
+        </div>
 
-document.getElementById('closeModal')?.addEventListener('click', () => {
-    document.getElementById('modal').classList.remove('active');
-});
+        <div id="loading" class="loading">Cargando...</div>
+        <div id="content" class="content-list"></div>
+    </div>
 
-document.getElementById('imagenes')?.addEventListener('change', (e) => {
-    const files = Array.from(e.target.files);
-    const preview = document.getElementById('imagePreview');
-    
-    files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const div = document.createElement('div');
-            div.className = 'image-preview-item';
-            div.innerHTML = `
-                <img src="${e.target.result}" alt="Preview">
-                <button type="button" class="image-preview-remove" onclick="this.parentElement.remove()">×</button>
-            `;
-            preview.appendChild(div);
-        };
-        reader.readAsDataURL(file);
-    });
-});
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Agregar Personaje</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <form id="itemForm" class="modal-form">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" id="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label>Alias</label>
+                    <input type="text" id="alias">
+                </div>
+                <div class="form-group">
+                    <label>Personalidad</label>
+                    <textarea id="personalidad" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Poder</label>
+                    <input type="text" id="poder">
+                </div>
+                <div class="form-group">
+                    <label>Habilidades</label>
+                    <textarea id="habilidades" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Características</label>
+                    <textarea id="caracteristicas" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Imágenes (puedes subir varias)</label>
+                    <input type="file" id="imagenes" accept="image/*" multiple>
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+                <button type="submit" class="btn-primary">Guardar</button>
+            </form>
+        </div>
+    </div>
 
-document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const nombre = document.getElementById('nombre').value;
-    const alias = document.getElementById('alias').value;
-    const personalidad = document.getElementById('personalidad').value;
-    const poder = document.getElementById('poder').value;
-    const habilidades = document.getElementById('habilidades').value;
-    const caracteristicas = document.getElementById('caracteristicas').value;
-    const imagenesFiles = Array.from(document.getElementById('imagenes').files);
-    
-    let imagenesUrls = currentItem?.imagenes || [];
-    
-    if (imagenesFiles.length > 0) {
-        for (const file of imagenesFiles) {
-            const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}_${file.name}`;
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('imagenes')
-                .upload(fileName, file);
-            
-            if (uploadError) {
-                alert('Error al subir imagen');
-                console.error(uploadError);
-                continue;
-            }
-            
-            const { data: { publicUrl } } = supabase.storage
-                .from('imagenes')
-                .getPublicUrl(fileName);
-            
-            imagenesUrls.push(publicUrl);
-        }
-    }
-    
-    const itemData = {
-        nombre,
-        alias,
-        personalidad,
-        poder,
-        habilidades,
-        caracteristicas,
-        imagenes: imagenesUrls
-    };
-    
-    try {
-        if (currentItem) {
-            const { error } = await supabase
-                .from('personajes')
-                .update(itemData)
-                .eq('id', currentItem.id);
-            
-            if (error) throw error;
-        } else {
-            const { error } = await supabase
-                .from('personajes')
-                .insert([itemData]);
-            
-            if (error) throw error;
-        }
-        
-        document.getElementById('modal').classList.remove('active');
-        loadPersonajes();
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Error al guardar');
-    }
-});
-
-async function editItem(id) {
-    const { data, error } = await supabase
-        .from('personajes')
-        .select('*')
-        .eq('id', id)
-        .single();
-    
-    if (error) {
-        console.error('Error:', error);
-        return;
-    }
-    
-    currentItem = data;
-    document.getElementById('modalTitle').textContent = 'Editar Personaje';
-    document.getElementById('nombre').value = data.nombre || '';
-    document.getElementById('alias').value = data.alias || '';
-    document.getElementById('personalidad').value = data.personalidad || '';
-    document.getElementById('poder').value = data.poder || '';
-    document.getElementById('habilidades').value = data.habilidades || '';
-    document.getElementById('caracteristicas').value = data.caracteristicas || '';
-    
-    const preview = document.getElementById('imagePreview');
-    preview.innerHTML = '';
-    
-    if (data.imagenes && data.imagenes.length > 0) {
-        data.imagenes.forEach(img => {
-            const div = document.createElement('div');
-            div.className = 'image-preview-item';
-            div.innerHTML = `
-                <img src="${img}" alt="Preview">
-            `;
-            preview.appendChild(div);
-        });
-    }
-    
-    document.getElementById('modal').classList.add('active');
-}
-
-async function deleteItem(id) {
-    if (!confirm('¿Estás seguro de eliminar este personaje?')) return;
-    
-    const { error } = await supabase
-        .from('personajes')
-        .delete()
-        .eq('id', id);
-    
-    if (error) {
-        console.error('Error:', error);
-        alert('Error al eliminar');
-        return;
-    }
-    
-    loadPersonajes();
-}
-
-loadPersonajes();
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/personajes.js"></script>
+</body>
+</html>
