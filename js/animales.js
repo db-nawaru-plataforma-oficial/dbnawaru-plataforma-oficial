@@ -59,6 +59,7 @@ document.getElementById('addBtn')?.addEventListener('click', () => {
     document.getElementById('imagePreview').innerHTML = '';
     document.getElementById('modal').classList.add('active');
 });
+
 document.getElementById('closeModal')?.addEventListener('click', () => {
     document.getElementById('modal').classList.remove('active');
 });
@@ -141,6 +142,7 @@ document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
         alert('Error al guardar');
     }
 });
+
 async function editItem(id) {
     const { data, error } = await supabase
         .from('animales_espirituales')
