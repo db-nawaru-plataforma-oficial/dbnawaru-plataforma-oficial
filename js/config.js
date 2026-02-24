@@ -1,10 +1,12 @@
-// REEMPLAZA ESTOS VALORES CON TUS CREDENCIALES DE SUPABASE
+// Credenciales de Supabase
 const SUPABASE_URL = 'https://shnwanhkuphlcevxnlvh.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_GqwY_VwSleM0MwNoshDQsQ_Qdl0lOu2';
+const SUPABASE_KEY = 'sb_publishable_GqwY_VwSleM0MwNoshDQsQ_Qdl0lOu2'; // Tu clave Anon Public
 
-// Credenciales de admin (puedes cambiarlas)
+// Credenciales de administrador únicas
 const ADMIN_USERNAME = 'Nawaru';
 const ADMIN_PASSWORD = 'JAO2026';
 
-// Inicializar Supabase
-const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+// Inicialización global forzada
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+console.log("Nawaru Config: Conexión con Supabase establecida.");
