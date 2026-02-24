@@ -4,38 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nawaru - Admin Login</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href__="css/styles.css">
 </head>
 <body>
     <div class="login-container">
         <div class="login-box">
             <div class="login-icon">🔒</div>
             <h1 class="login-title">Acceso Administrador</h1>
-            <p class="login-subtitle">Ingresa tus credenciales</p>
+            <p class="login-subtitle">Usuario: Nawaru | Contraseña: JAO#2026</p>
             
-            <div id="errorMsg" class="error-msg" style="display: none; color: #ff4d4d; margin-bottom: 1rem; text-align: center;"></div>
+            <div id="errorMsg" class="error-msg" style="display: none;"></div>
             
             <form id="loginForm" class="login-form">
                 <div class="form-group">
-                    <label for="username">Usuario (Email)</label>
-                    <input type="email" id="username" placeholder="tu@email.com" required>
+                    <label>Usuario</label>
+                    <input type="text" id="username" placeholder="Nawaru" required autocomplete="off">
                 </div>
                 
                 <div class="form-group">
-                    <label for="password">Contraseña</label>
-                    <input type="password" id="password" placeholder="••••••••" required>
+                    <label>Contraseña</label>
+                    <input type="password" id="password" placeholder="JAO#2026" required>
                 </div>
                 
-                <button type="submit" class="btn-primary" style="width: 100%;">Iniciar Sesión</button>
-                <div style="text-align: center; margin-top: 15px;">
-                    <a href="index.html" style="text-decoration: none; font-size: 0.9rem; color: #888;">← Volver al inicio</a>
-                </div>
+                <button type="submit" class="btn-primary">Iniciar Sesión</button>
             </form>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/config.js"></script>
-    <script src="js/auth.js"></script>
+    <script>
+        // Login directo en el mismo archivo
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+            
+            // Credenciales exactas
+            if (username === 'Nawaru' && password === 'JAO#2026') {
+                localStorage.setItem('nawaru_admin', 'true');
+                window.location.href = 'index.html';
+            } else {
+                errorMsg.textContent = '❌ Usuario: Nawaru | Contraseña: JAO#2026';
+                errorMsg.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
