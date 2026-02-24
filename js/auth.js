@@ -4,33 +4,43 @@ function isAdmin() {
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
-    
+    const errorMsg = document.getElementById('errorMsg');
+
     if (loginForm) {
+        // Limpiar localStorage por si acaso hay basura de sesiones viejas
+        localStorage.removeItem('nawaru_admin');
+
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const userField = document.getElementById('username').value;
-            const passField = document.getElementById('password').value;
-            const errorMsg = document.getElementById('errorMsg');
+            // Trim() elimina espacios accidentales al principio o final
+            const userField = document.getElementById('username').value.trim();
+            const passField = document.getElementById('password').value.trim();
 
-            // Usamos las variables que inyectamos en window
+            console.log("Intentando entrar con:", userField);
+
             if (userField === window.NAWARU_USER && passField === window.NAWARU_PASS) {
+                console.log("✅ Acceso concedido");
                 localStorage.setItem('nawaru_admin', 'true');
                 window.location.href = 'index.html';
             } else {
+                console.error("❌ Acceso denegado");
                 if (errorMsg) {
-                    errorMsg.textContent = 'Credenciales Incorrectas';
+                    errorMsg.textContent = 'Usuario o contraseña incorrectos. Revisa las mayúsculas.';
                     errorMsg.style.display = 'block';
-                    errorMsg.style.color = '#ff4d4d';
+                    errorMsg.style.background = 'rgba(255, 0, 0, 0.2)';
+                    errorMsg.style.color = '#ff6b6b';
                 }
             }
         });
     }
 
-    // Lógica para mostrar/ocultar botones de admin
+    // Botón Salir
     const logoutBtn = document.getElementById('logoutBtn');
-    if (isAdmin()) {
-        if (logoutBtn) logoutBtn.style.display = 'block';
-        document.querySelectorAll('#addBtn').forEach(b => b.style.display = 'block');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('nawaru_admin');
+            window.location.href = 'index.html';
+        });
     }
 });
