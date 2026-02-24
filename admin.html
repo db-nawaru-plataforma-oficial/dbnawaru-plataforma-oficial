@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nawaru - Admin Login</title>
-    <link rel="stylesheet" href__="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="login-container">
@@ -13,26 +13,29 @@
             <h1 class="login-title">Acceso Administrador</h1>
             <p class="login-subtitle">Ingresa tus credenciales</p>
             
-            <div id="errorMsg" class="error-msg" style="display: none;"></div>
+            <div id="errorMsg" class="error-msg" style="display: none; color: #ff4d4d; margin-bottom: 1rem; text-align: center;"></div>
             
             <form id="loginForm" class="login-form">
                 <div class="form-group">
-                    <label>Usuario</label>
-                    <input type="text" id="username" placeholder="Ingresa tu usuario" required>
+                    <label for="username">Usuario (Email)</label>
+                    <input type="email" id="username" placeholder="tu@email.com" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>Contraseña</label>
-                    <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
                 </div>
                 
-                <button type="submit" class="btn-primary">Iniciar Sesión</button>
+                <button type="submit" class="btn-primary" style="width: 100%;">Iniciar Sesión</button>
+                <div style="text-align: center; margin-top: 15px;">
+                    <a href="index.html" style="text-decoration: none; font-size: 0.9rem; color: #888;">← Volver al inicio</a>
+                </div>
             </form>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
 </body>
 </html>
-
