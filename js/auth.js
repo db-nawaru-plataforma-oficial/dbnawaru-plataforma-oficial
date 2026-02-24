@@ -3,17 +3,20 @@ function isAdmin() {
     return localStorage.getItem('nawaru_admin') === 'true';
 }
 
-// Login
-if (document.getElementById('loginForm')) {
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
+// Lógica de Login
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+        const usernameInput = document.getElementById('username').value;
+        const passwordInput = document.getElementById('password').value;
         const errorMsg = document.getElementById('errorMsg');
         
-        if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        // Validación contra las constantes de config.js
+        if (usernameInput === ADMIN_USERNAME && passwordInput === ADMIN_PASSWORD) {
             localStorage.setItem('nawaru_admin', 'true');
+            // Redirigir al panel principal
             window.location.href = 'index.html';
         } else {
             errorMsg.textContent = 'Usuario o contraseña incorrectos';
@@ -22,23 +25,22 @@ if (document.getElementById('loginForm')) {
     });
 }
 
-// Logout
-const logoutBtn = document.getElementById('logoutBtn');
-if (logoutBtn) {
+// Lógica de Logout y Visibilidad
+document.addEventListener('DOMContentLoaded', () => {
+    const logoutBtn = document.getElementById('logoutBtn');
+    const loginIcon = document.getElementById('loginIcon');
+    const addBtn = document.getElementById('addBtn');
+
     if (isAdmin()) {
-        logoutBtn.style.display = 'block';
-        document.getElementById('loginIcon').style.display = 'none';
+        if (logoutBtn) logoutBtn.style.display = 'block';
+        if (loginIcon) loginIcon.style.display = 'none';
+        if (addBtn) addBtn.style.display = 'block';
     }
-    
-    logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('nawaru_admin');
-        window.location.href = 'index.html';
-    });
-}
 
-// Mostrar/ocultar botones de admin
-const addBtn = document.getElementById('addBtn');
-if (addBtn && isAdmin()) {
-    addBtn.style.display = 'block';
-}
-
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('nawaru_admin');
+            window.location.href = 'index.html';
+        });
+    }
+});
