@@ -3,8 +3,8 @@
 // ====================================
 // REEMPLAZA estos valores con tus credenciales de Supabase
 
-const SUPABASE_URL = 'TU_SUPABASE_URL_AQUI';
-const SUPABASE_KEY = 'TU_SUPABASE_ANON_KEY_AQUI';
+const SUPABASE_URL = 'https://shnwanhkuphlcevxnlvh.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_GqwY_VwSleM0MwNoshDQsQ_Qdl0lOu2';
 
 // Credenciales de administrador (puedes cambiarlas)
 const ADMIN_USERNAME = 'Nawaru';
