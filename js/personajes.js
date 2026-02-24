@@ -1,10 +1,19 @@
 let currentItem = null;
 
+// Función de seguridad para verificar la conexión
+function checkSupabase() {
+    if (typeof supabase === 'undefined' || !supabase) {
+        console.error("Supabase no está definido. Revisa js/config.js");
+        return false;
+    }
+    return true;
+}
+
 async function loadPersonajes() {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
     
-    if (!supabase) {
+    if (!checkSupabase()) {
         content.innerHTML = '<p class="loading">⚠️ Error: Supabase no configurado</p>';
         loading.style.display = 'none';
         return;
@@ -20,7 +29,7 @@ async function loadPersonajes() {
         
         loading.style.display = 'none';
         
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             content.innerHTML = '<p class="loading">No hay personajes registrados</p>';
             return;
         }
@@ -47,7 +56,7 @@ async function loadPersonajes() {
                     ${personaje.habilidades ? `<div class="content-card-field"><strong>Habilidades:</strong> ${personaje.habilidades}</div>` : ''}
                     ${personaje.caracteristicas ? `<div class="content-card-field"><strong>Características:</strong> ${personaje.caracteristicas}</div>` : ''}
                 </div>
-                ${isAdmin() ? `
+                ${typeof isAdmin === 'function' && isAdmin() ? `
                     <div class="content-card-actions">
                         <button class="btn-edit" onclick="editItem(${personaje.id})">✏️ Editar</button>
                         <button class="btn-delete" onclick="deleteItem(${personaje.id})">🗑️ Eliminar</button>
@@ -75,12 +84,6 @@ document.getElementById('closeModal')?.addEventListener('click', () => {
     document.getElementById('modal').classList.remove('active');
 });
 
-document.getElementById('modal')?.addEventListener('click', (e) => {
-    if (e.target.id === 'modal') {
-        document.getElementById('modal').classList.remove('active');
-    }
-});
-
 document.getElementById('imagenes')?.addEventListener('change', (e) => {
     const files = Array.from(e.target.files);
     const preview = document.getElementById('imagePreview');
@@ -91,9 +94,7 @@ document.getElementById('imagenes')?.addEventListener('change', (e) => {
         reader.onload = (e) => {
             const div = document.createElement('div');
             div.className = 'image-preview-item';
-            div.innerHTML = `
-                <img src="${e.target.result}" alt="Preview">
-            `;
+            div.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
             preview.appendChild(div);
         };
         reader.readAsDataURL(file);
@@ -103,6 +104,11 @@ document.getElementById('imagenes')?.addEventListener('change', (e) => {
 document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
+    if (!checkSupabase()) {
+        alert("Error: Supabase no está conectado.");
+        return;
+    }
+
     const submitBtn = e.target.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
     submitBtn.textContent = '⏳ Guardando...';
@@ -121,6 +127,10 @@ document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
         if (imagenesFiles.length > 0) {
             for (const file of imagenesFiles) {
                 const fileName = `personajes/${Date.now()}_${Math.random().toString(36).substr(2, 9)}_${file.name}`;
+                
+                // Verificación extra del storage antes de subir
+                if (!supabase.storage) throw new Error("El módulo de Storage no está disponible.");
+
                 const { error: uploadError } = await supabase.storage
                     .from('imagenes')
                     .upload(fileName, file);
@@ -150,13 +160,11 @@ document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
                 .from('personajes')
                 .update(itemData)
                 .eq('id', currentItem.id);
-            
             if (error) throw error;
         } else {
             const { error } = await supabase
                 .from('personajes')
                 .insert([itemData]);
-            
             if (error) throw error;
         }
         
@@ -164,70 +172,13 @@ document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
         loadPersonajes();
         
     } catch (error) {
-        console.error('Error:', error);
-        alert('❌ Error al guardar: ' + error.message);
+        console.error('Error detallado:', error);
+        alert('❌ Error al guardar: ' + (error.message || "Error desconocido"));
     } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = '💾 Guardar';
     }
 });
 
-async function editItem(id) {
-    try {
-        const { data, error } = await supabase
-            .from('personajes')
-            .select('*')
-            .eq('id', id)
-            .single();
-        
-        if (error) throw error;
-        
-        currentItem = data;
-        document.getElementById('modalTitle').textContent = 'Editar Personaje';
-        document.getElementById('nombre').value = data.nombre || '';
-        document.getElementById('alias').value = data.alias || '';
-        document.getElementById('personalidad').value = data.personalidad || '';
-        document.getElementById('poder').value = data.poder || '';
-        document.getElementById('habilidades').value = data.habilidades || '';
-        document.getElementById('caracteristicas').value = data.caracteristicas || '';
-        
-        const preview = document.getElementById('imagePreview');
-        preview.innerHTML = '';
-        
-        if (data.imagenes && data.imagenes.length > 0) {
-            data.imagenes.forEach(img => {
-                const div = document.createElement('div');
-                div.className = 'image-preview-item';
-                div.innerHTML = `<img src="${img}" alt="Preview">`;
-                preview.appendChild(div);
-            });
-        }
-        
-        document.getElementById('modal').classList.add('active');
-        
-    } catch (error) {
-        console.error('Error:', error);
-        alert('❌ Error al cargar el personaje');
-    }
-}
-
-async function deleteItem(id) {
-    if (!confirm('¿Estás seguro de eliminar este personaje?')) return;
-    
-    try {
-        const { error } = await supabase
-            .from('personajes')
-            .delete()
-            .eq('id', id);
-        
-        if (error) throw error;
-        
-        loadPersonajes();
-        
-    } catch (error) {
-        console.error('Error:', error);
-        alert('❌ Error al eliminar');
-    }
-}
-
+// Iniciar carga
 loadPersonajes();
