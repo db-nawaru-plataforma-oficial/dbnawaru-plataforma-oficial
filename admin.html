@@ -3,45 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nawaru - Acceso</title>
-    <style>
-        body { margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #000; font-family: sans-serif; color: white; }
-        .login-box { background: #111; padding: 40px; border-radius: 15px; border: 2px solid #00ff88; width: 320px; box-shadow: 0 0 20px rgba(0,255,136,0.2); text-align: center; }
-        h2 { color: #00ff88; margin-bottom: 25px; }
-        input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #333; background: #222; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #00ff88; border: none; color: black; font-weight: bold; cursor: pointer; border-radius: 5px; }
-        button:hover { background: #00cc6e; }
-        #errorMsg { color: #ff4d4d; background: rgba(255,0,0,0.1); padding: 10px; border-radius: 5px; margin-bottom: 20px; display: none; font-size: 14px; }
-    </style>
+    <title>Nawaru - Admin Login</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-
-    <div class="login-box">
-        <h2>NAWARU LOGIN</h2>
-        <div id="errorMsg">Usuario o clave incorrectos</div>
-        <form id="directLoginForm">
-            <input type="text" id="user" placeholder="Usuario" required>
-            <input type="password" id="pass" placeholder="Contraseña" required>
-            <button type="submit">ENTRAR</button>
-        </form>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-icon">🔒</div>
+            <h1 class="login-title">Acceso Administrador</h1>
+            <div id="errorMsg" class="error-msg" style="display: none; color: #ff4d4d; margin-bottom: 10px;"></div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="username" placeholder="Nawaru" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="password" placeholder="JAO2026" required>
+                </div>
+                <button type="submit" class="btn-primary">Iniciar Sesión</button>
+            </form>
+        </div>
     </div>
 
-    <script>
-        // LÓGICA DIRECTA SIN DEPENDER DE OTROS JS
-        document.getElementById('directLoginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const u = document.getElementById('user').value.trim();
-            const p = document.getElementById('pass').value.trim();
-
-            // Validación Directa (Fuerza Bruta)
-            if (u === "Nawaru" && p === "JAO2026") {
-                localStorage.setItem('nawaru_admin', 'true');
-                window.location.href = 'index.html';
-            } else {
-                document.getElementById('errorMsg').style.display = 'block';
-            }
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
 </body>
 </html>
