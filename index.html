@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nawaru - Inicio</title>
+    <link rel="stylesheet" href__="css/styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text">NAWARU</span>
+            </div>
+            <div class="nav-actions">
+                <a href__="admin.html" class="login-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+                <button class="menu-btn" id="menuBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="nav-menu" id="navMenu">
+            <a href__="reinos.html">Reinos</a>
+            <a href__="personajes.html">Personajes</a>
+            <a href__="razas.html">Razas</a>
+            <a href__="animales.html">Animales Espirituales</a>
+            <a href__="mapas.html">Mapas</a>
+            <a href__="poderes.html">Poderes Elementales</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1 class="hero-title">NAWARU</h1>
+        <p class="hero-subtitle">Un universo por descubrir</p>
+        <div class="hero-divider"></div>
+    </div>
+
+    <!-- Grid de Secciones -->
+    <div class="container">
+        <div class="grid">
+            <a href__="reinos.html" class="card">
+                <div class="card-icon">👑</div>
+                <h3 class="card-title">Reinos</h3>
+                <p class="card-desc">Explora los reinos del mundo</p>
+            </a>
+            
+            <a href__="personajes.html" class="card">
+                <div class="card-icon">👥</div>
+                <h3 class="card-title">Personajes</h3>
+                <p class="card-desc">Conoce a los personajes</p>
+            </a>
+            
+            <a href__="razas.html" class="card">
+                <div class="card-icon">🧬</div>
+                <h3 class="card-title">Razas</h3>
+                <p class="card-desc">Descubre las razas</p>
+            </a>
+            
+            <a href__="animales.html" class="card">
+                <div class="card-icon">✨</div>
+                <h3 class="card-title">Animales Espirituales</h3>
+                <p class="card-desc">Seres místicos</p>
+            </a>
+            
+            <a href__="mapas.html" class="card">
+                <div class="card-icon">🗺️</div>
+                <h3 class="card-title">Mapas</h3>
+                <p class="card-desc">Explora el territorio</p>
+            </a>
+            
+            <a href__="poderes.html" class="card">
+                <div class="card-icon">🔥</div>
+                <h3 class="card-title">Poderes Elementales</h3>
+                <p class="card-desc">Poderes del universo</p>
+            </a>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        // Menu toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const navMenu = document.getElementById('navMenu');
+        
+        menuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
