@@ -1,16 +1,24 @@
-// CONFIGURACIÓN DE SUPABASE
-const SUPABASE_URL = 'https://shnwanhkuphlcevxnlvh.supabase.co'; 
-const SUPABASE_KEY = 'sb_publishable_GqwY_VwSleM0MwNoshDQsQ_Qdl0lOu2'; // La que empieza con sb_publishable
+// CONFIGURACIÓN DE SUPABASE - VERSIÓN FINAL
+const SUPABASE_URL = 'https://shnwanhkuphlcevxnlvh.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_GqwY_VwSleM0MwNoshDQsQ_Qdl0lOu2'; // <--- PEGA TU LLAVE AQUÍ
 
 let supabase = null;
 
-try {
+function initSupabase() {
     if (typeof window.supabase !== 'undefined') {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        console.log("✅ Conexión con Supabase inicializada");
+        console.log("✅ Cliente Supabase creado");
+        
+        // Verificación manual de Storage
+        if (supabase.storage) {
+            console.log("✅ Módulo de Storage detectado");
+        } else {
+            console.error("❌ El cliente no cargó el módulo de Storage");
+        }
     } else {
-        console.error("❌ Error: No se detectó la librería de Supabase.");
+        console.error("❌ La librería CDN de Supabase no se cargó");
     }
-} catch (error) {
-    console.error("❌ Error al configurar Supabase:", error);
 }
+
+// Ejecutar inicialización
+initSupabase();
