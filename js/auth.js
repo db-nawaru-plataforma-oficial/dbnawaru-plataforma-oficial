@@ -1,52 +1,71 @@
-// 1. Definir credenciales si no vienen de config.js (Cámbialas por las tuyas)
-const ADMIN_USERNAME = "admin"; 
-const ADMIN_PASSWORD = "123"; 
+/**
+ * NAWARU - Sistema de Autenticación
+ * Las credenciales ADMIN_USERNAME y ADMIN_PASSWORD se toman de js/config.js
+ */
 
-// Verificar si el usuario está logueado
+// Verificar si el usuario tiene una sesión activa de administrador
 function isAdmin() {
     return localStorage.getItem('nawaru_admin') === 'true';
 }
 
-// Lógica de Login
+// Lógica del Formulario de Login (Solo para admin.html)
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+        const usernameInput = document.getElementById('username').value;
+        const passwordInput = document.getElementById('password').value;
         const errorMsg = document.getElementById('errorMsg');
         
-        if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        // Comparamos con las variables globales definidas en config.js
+        if (usernameInput === ADMIN_USERNAME && passwordInput === ADMIN_PASSWORD) {
             localStorage.setItem('nawaru_admin', 'true');
-            // Redirigir al inicio
+            // Redirigir al panel principal tras éxito
             window.location.href = 'index.html';
         } else {
             if (errorMsg) {
-                errorMsg.textContent = 'Usuario o contraseña incorrectos';
+                errorMsg.textContent = 'Credenciales de Nawaru incorrectas';
                 errorMsg.style.display = 'block';
+                // Efecto visual de error
+                errorMsg.style.animation = 'shake 0.5s';
+                setTimeout(() => errorMsg.style.animation = '', 500);
             }
         }
     });
 }
 
-// Lógica de Logout y Vista de Admin
+// Control de UI basado en permisos (Se ejecuta en todas las páginas)
 document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logoutBtn');
     const loginIcon = document.getElementById('loginIcon');
     const addBtn = document.getElementById('addBtn');
 
     if (isAdmin()) {
-        // Si es admin, mostrar botón cerrar sesión y ocultar login
+        // MODO ADMIN: Mostrar herramientas de edición
         if (logoutBtn) logoutBtn.style.display = 'block';
         if (loginIcon) loginIcon.style.display = 'none';
         if (addBtn) addBtn.style.display = 'block';
+        
+        // Mostrar botones de edición/borrado que puedan existir
+        document.querySelectorAll('.content-card-actions').forEach(el => {
+            el.style.display = 'flex';
+        });
+    } else {
+        // MODO VISITANTE: Ocultar herramientas
+        if (logoutBtn) logoutBtn.style.display = 'none';
+        if (loginIcon) loginIcon.style.display = 'block';
+        if (addBtn) addBtn.style.display = 'none';
     }
 
+    // Lógica del botón Cerrar Sesión
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('nawaru_admin');
-            window.location.href = 'index.html';
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm('¿Cerrar sesión de administrador?')) {
+                localStorage.removeItem('nawaru_admin');
+                window.location.href = 'index.html';
+            }
         });
     }
 });
