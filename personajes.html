@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nawaru - Personajes</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href__="css/styles.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="index.html" class="logo-text">NAWARU</a>
+                <a href__="index.html" class="logo-text">NAWARU</a>
             </div>
             <div class="nav-actions">
                 <button class="btn-logout" id="logoutBtn" style="display: none;">Cerrar Sesión</button>
-                <a href="admin.html" class="login-icon" id="loginIcon">
+                <a href__="admin.html" class="login-icon" id="loginIcon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
@@ -45,31 +45,31 @@
             </div>
             <form id="itemForm" class="modal-form">
                 <div class="form-group">
-                    <label for="nombre">Nombre</label>
+                    <label>Nombre</label>
                     <input type="text" id="nombre" required>
                 </div>
                 <div class="form-group">
-                    <label for="alias">Alias</label>
+                    <label>Alias</label>
                     <input type="text" id="alias">
                 </div>
                 <div class="form-group">
-                    <label for="personalidad">Personalidad</label>
+                    <label>Personalidad</label>
                     <textarea id="personalidad" rows="3"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="poder">Poder</label>
+                    <label>Poder</label>
                     <input type="text" id="poder">
                 </div>
                 <div class="form-group">
-                    <label for="habilidades">Habilidades</label>
+                    <label>Habilidades</label>
                     <textarea id="habilidades" rows="3"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="caracteristicas">Características</label>
+                    <label>Características</label>
                     <textarea id="caracteristicas" rows="3"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="imagenes">Imágenes (puedes subir varias)</label>
+                    <label>Imágenes (puedes subir varias)</label>
                     <input type="file" id="imagenes" accept="image/*" multiple>
                     <div id="imagePreview" class="image-preview"></div>
                 </div>
@@ -79,11 +79,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <script src="js/config.js"></script>
-    
     <script src="js/auth.js"></script>
-    
     <script src="js/personajes.js"></script>
 </body>
 </html>
