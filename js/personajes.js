@@ -1,51 +1,33 @@
+// Variable global para edición
 let currentItem = null;
 
-// Cargar Personajes desde la base de datos
+// CARGAR PERSONAJES
 async function loadPersonajes() {
-    const loading = document.getElementById('loading');
     const content = document.getElementById('content');
-    
+    const loading = document.getElementById('loading');
+
     try {
-        const { data, error } = await window.supabase
-            .from('personajes')
-            .select('*')
-            .order('created_at', { ascending: false });
-        
+        const { data, error } = await supabase.from('personajes').select('*').order('created_at', { ascending: false });
         if (error) throw error;
+
         if (loading) loading.style.display = 'none';
-        
-        if (data.length === 0) {
-            content.innerHTML = '<p class="loading">No hay personajes registrados</p>';
-            return;
-        }
-        
         content.innerHTML = data.map(pj => `
             <div class="content-card">
-                ${pj.imagenes && pj.imagenes.length > 0 ? `
-                    <div class="content-card-images">
-                        ${pj.imagenes.map(img => `
-                            <div class="content-card-image"><img src="${img}"></div>
-                        `).join('')}
-                    </div>
-                ` : ''}
                 <div class="content-card-body">
                     <h3 class="content-card-title">${pj.nombre}</h3>
                     <p><strong>Alias:</strong> ${pj.alias || 'N/A'}</p>
-                    <p class="content-card-desc">${pj.personalidad || ''}</p>
+                    <p>${pj.personalidad || ''}</p>
                 </div>
-                ${isAdmin() ? `
+                ${localStorage.getItem('nawaru_admin') === 'true' ? `
                     <div class="content-card-actions">
-                        <button onclick="editItem(${pj.id})">✏️</button>
-                        <button onclick="deleteItem(${pj.id})">🗑️</button>
+                        <button onclick="deleteItem(${pj.id})" style="background:red; color:white; border:none; padding:5px; border-radius:3px; cursor:pointer;">Eliminar</button>
                     </div>` : ''}
             </div>
         `).join('');
-    } catch (err) {
-        console.error('Error cargando personajes:', err);
-    }
+    } catch (err) { console.error("Error cargando:", err); }
 }
 
-// Guardar (Insertar o Editar)
+// GUARDAR INFORMACIÓN (Aquí estaba el fallo)
 document.getElementById('itemForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = e.target.querySelector('button[type="submit"]');
@@ -53,24 +35,21 @@ document.getElementById('itemForm').addEventListener('submit', async (e) => {
     btn.textContent = 'Guardando...';
 
     try {
-        const fileInput = document.getElementById('imagenes');
-        const files = fileInput.files;
-        let urls = currentItem ? (currentItem.imagenes || []) : [];
+        const files = document.getElementById('imagenes').files;
+        let urls = [];
 
-        // Subir imágenes nuevas si existen
+        // 1. Subir imágenes si hay seleccionadas
         for (const file of files) {
-            const fileName = `${Date.now()}_${file.name.replace(/\s/g, '_')}`;
-            const { data, error: upError } = await window.supabase.storage
-                .from('imagenes') // DEBES TENER UN BUCKET PÚBLICO LLAMADO 'imagenes'
-                .upload(fileName, file);
-
+            const fileName = `${Date.now()}_${file.name}`;
+            const { data, error: upError } = await supabase.storage.from('imagenes').upload(fileName, file);
             if (upError) throw upError;
-
-            const { data: { publicUrl } } = window.supabase.storage.from('imagenes').getPublicUrl(fileName);
+            
+            const { data: { publicUrl } } = supabase.storage.from('imagenes').getPublicUrl(fileName);
             urls.push(publicUrl);
         }
 
-        const payload = {
+        // 2. Preparar datos
+        const pjData = {
             nombre: document.getElementById('nombre').value,
             alias: document.getElementById('alias').value,
             personalidad: document.getElementById('personalidad').value,
@@ -80,39 +59,23 @@ document.getElementById('itemForm').addEventListener('submit', async (e) => {
             imagenes: urls
         };
 
-        if (currentItem) {
-            const { error } = await window.supabase.from('personajes').update(payload).eq('id', currentItem.id);
-            if (error) throw error;
-        } else {
-            const { error } = await window.supabase.from('personajes').insert([payload]);
-            if (error) throw error;
-        }
+        // 3. Insertar en la tabla
+        const { error } = await supabase.from('personajes').insert([pjData]);
+        if (error) throw error;
 
         location.reload();
     } catch (err) {
-        alert("Error: " + err.message);
+        alert("Error al guardar: " + err.message);
         btn.disabled = false;
         btn.textContent = 'Guardar';
     }
 });
 
-// Editar
-async function editItem(id) {
-    const { data, error } = await window.supabase.from('personajes').select('*').eq('id', id).single();
-    if (error) return;
-    currentItem = data;
-    document.getElementById('nombre').value = data.nombre;
-    document.getElementById('alias').value = data.alias || '';
-    document.getElementById('personalidad').value = data.personalidad || '';
-    document.getElementById('modal').classList.add('active');
-}
-
-// Eliminar
 async function deleteItem(id) {
-    if (!confirm('¿Eliminar personaje?')) return;
-    await window.supabase.from('personajes').delete().eq('id', id);
-    loadPersonajes();
+    if(confirm("¿Eliminar?")) {
+        await supabase.from('personajes').delete().eq('id', id);
+        loadPersonajes();
+    }
 }
 
-// Iniciar proceso
 document.addEventListener('DOMContentLoaded', loadPersonajes);
