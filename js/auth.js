@@ -1,39 +1,45 @@
-// 1. Función para verificar si hay sesión de admin
+// Verificar si el usuario está logueado
 function isAdmin() {
     return localStorage.getItem('nawaru_admin') === 'true';
 }
 
-// 2. Función para MOSTRAR los elementos de administrador
-function mostrarElementosAdmin() {
-    const logueado = isAdmin();
-    
-    // Buscar los botones por sus IDs comunes
-    const btnAdd = document.getElementById('addBtn');
-    const btnLogout = document.getElementById('logoutBtn');
-    const loginIcon = document.getElementById('loginIcon');
-
-    if (logueado) {
-        if (btnAdd) btnAdd.style.display = 'block';
-        if (btnLogout) btnLogout.style.display = 'block';
-        if (loginIcon) loginIcon.style.display = 'none';
+// Lógica de Login
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
         
-        // Mostrar también los botones de editar/borrar dentro de las tarjetas
-        document.querySelectorAll('.content-card-actions').forEach(div => {
-            div.style.display = 'flex';
-        });
-    }
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorMsg = document.getElementById('errorMsg');
+        
+        // Usamos las variables que vienen de config.js
+        if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+            localStorage.setItem('nawaru_admin', 'true');
+            window.location.href = 'index.html';
+        } else {
+            if (errorMsg) {
+                errorMsg.textContent = 'Usuario o contraseña incorrectos';
+                errorMsg.style.display = 'block';
+            }
+        }
+    });
 }
 
-// 3. Ejecutar automáticamente al cargar cualquier página
+// Lógica de Vista de Admin (Activa los botones)
 document.addEventListener('DOMContentLoaded', () => {
-    mostrarElementosAdmin();
-
-    // Configurar el botón de Cerrar Sesión si existe
     const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('nawaru_admin');
-            window.location.href = 'index.html';
-        });
+    const loginIcon = document.getElementById('loginIcon');
+    const addBtn = document.getElementById('addBtn');
+
+    if (isAdmin()) {
+        if (logoutBtn) logoutBtn.style.display = 'block';
+        if (loginIcon) loginIcon.style.display = 'none';
+        if (addBtn) addBtn.style.display = 'block';
+        
+        // Esto asegura que los botones de editar/borrar en las tarjetas se vean
+        const style = document.createElement('style');
+        style.innerHTML = '.content-card-actions { display: flex !important; }';
+        document.head.appendChild(style);
     }
 });
