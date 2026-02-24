@@ -11,28 +11,26 @@
         <div class="login-box">
             <div class="login-icon">🔒</div>
             <h1 class="login-title">Acceso Administrador</h1>
-            <p class="login-subtitle">Ingresa tus credenciales</p>
-            
-            <div id="errorMsg" class="error-msg" style="display: none;"></div>
+            <div id="errorMsg" class="error-msg" style="display: none; padding: 10px; margin-bottom: 10px; border-radius: 5px; background: rgba(255,0,0,0.1);"></div>
             
             <form id="loginForm" class="login-form">
                 <div class="form-group">
                     <label>Usuario</label>
-                    <input type="text" id="username" placeholder="Ingresa tu usuario" required>
+                    <input type="text" id="username" placeholder="Nawaru" required>
                 </div>
-                
                 <div class="form-group">
                     <label>Contraseña</label>
-                    <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+                    <input type="password" id="password" placeholder="••••••••" required>
                 </div>
-                
-                <button type="submit" class="btn-primary">Iniciar Sesión</button>
+                <button type="submit" class="btn-primary">Entrar</button>
             </form>
+            <br>
+            <a href="index.html" style="color: #666; text-decoration: none; font-size: 0.8rem;">← Volver al inicio</a>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/config.js"></script> <script src="js/auth.js"></script>
-</body>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
 </body>
 </html>
