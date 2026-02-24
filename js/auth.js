@@ -1,5 +1,5 @@
 // ====================================
-// AUTENTICACIÓN
+// AUTENTICACIÓN - CORREGIDO
 // ====================================
 
 function isAdmin() {
@@ -7,24 +7,37 @@ function isAdmin() {
 }
 
 // Manejo del formulario de login
-if (document.getElementById('loginForm')) {
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
         const errorMsg = document.getElementById('errorMsg');
         
-        if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        console.log('Intento de login:', username); // Para debug
+        
+        // Credenciales exactas
+        if (username === 'Nawaru' && password === 'JAO#2026') {
             localStorage.setItem('nawaru_admin', 'true');
+            alert('✅ Login exitoso');
             window.location.href = 'index.html';
         } else {
             errorMsg.textContent = '❌ Usuario o contraseña incorrectos';
             errorMsg.style.display = 'block';
             
+            // Mostrar ayuda
+            setTimeout(() => {
+                errorMsg.innerHTML = `
+                    ❌ Usuario o contraseña incorrectos<br>
+                    <small style="color: #999;">Usuario: Nawaru | Contraseña: JAO#2026</small>
+                `;
+            }, 1000);
+            
             setTimeout(() => {
                 errorMsg.style.display = 'none';
-            }, 3000);
+            }, 5000);
         }
     });
 }
@@ -52,3 +65,6 @@ const addBtn = document.getElementById('addBtn');
 if (addBtn && isAdmin()) {
     addBtn.style.display = 'block';
 }
+
+// Debug: Mostrar estado actual
+console.log('Estado admin:', isAdmin());
