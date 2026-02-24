@@ -1,8 +1,8 @@
 // CONFIGURACIÓN DE SUPABASE
 // Reemplaza con tus credenciales reales
 
-const SUPABASE_URL = 'https://TU_PROYECTO.supabase.co';
-const SUPABASE_KEY = 'TU_ANON_KEY_AQUI';
+const SUPABASE_URL = 'https://shnwanhkuphlcevxnlvh.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_GqwY_VwSleM0MwNoshDQsQ_Qdl0lOu2';
 
 // Inicializar Supabase (solo si existe el SDK)
 let supabase = null;
