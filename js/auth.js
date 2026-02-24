@@ -1,43 +1,36 @@
-// Verificar si el usuario es administrador
+// Función para verificar si es admin
 function isAdmin() {
     return localStorage.getItem('nawaru_admin') === 'true';
 }
 
-// Lógica de Login (admin.html)
-const loginForm = document.getElementById('loginForm');
-if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const usernameInput = document.getElementById('username').value;
-        const passwordInput = document.getElementById('password').value;
-        const errorMsg = document.getElementById('errorMsg');
-        
-        // Usamos las constantes definidas en config.js
-        if (usernameInput === ADMIN_USERNAME && passwordInput === ADMIN_PASSWORD) {
-            localStorage.setItem('nawaru_admin', 'true');
-            window.location.href = 'index.html';
-        } else {
-            if (errorMsg) {
-                errorMsg.textContent = 'Credenciales de Nawaru incorrectas';
-                errorMsg.style.display = 'block';
-            }
-        }
-    });
-}
-
-// Control de interfaz al cargar cualquier página
+// Lógica de Login mejorada
 document.addEventListener('DOMContentLoaded', () => {
-    const logoutBtn = document.getElementById('logoutBtn');
-    const addBtn = document.getElementById('addBtn');
-    const loginIcon = document.getElementById('loginIcon');
+    const loginForm = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
 
-    if (isAdmin()) {
-        if (logoutBtn) logoutBtn.style.display = 'block';
-        if (addBtn) addBtn.style.display = 'block';
-        if (loginIcon) loginIcon.style.display = 'none';
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            // Usamos window. para asegurar que leemos de config.js
+            if (user === window.ADMIN_USERNAME && pass === window.ADMIN_PASSWORD) {
+                localStorage.setItem('nawaru_admin', 'true');
+                window.location.href = 'index.html';
+            } else {
+                if (errorMsg) {
+                    errorMsg.textContent = 'Usuario o contraseña de Nawaru incorrectos';
+                    errorMsg.style.display = 'block';
+                    errorMsg.style.color = '#ff4d4d';
+                }
+            }
+        });
     }
 
+    // Botón cerrar sesión
+    const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('nawaru_admin');
