@@ -1,19 +1,11 @@
-// ====================================
 // CONFIGURACIÓN DE SUPABASE
-// ====================================
-// REEMPLAZA estos valores con tus credenciales de Supabase
+// Reemplaza con tus credenciales reales
 
-const SUPABASE_URL = 'https://shnwanhkuphlcevxnlvh.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_GqwY_VwSleM0MwNoshDQsQ_Qdl0lOu2';
+const SUPABASE_URL = 'https://TU_PROYECTO.supabase.co';
+const SUPABASE_KEY = 'TU_ANON_KEY_AQUI';
 
-// Credenciales de administrador (puedes cambiarlas)
-const ADMIN_USERNAME = 'Nawaru';
-const ADMIN_PASSWORD = 'JAO#2026';
-
-// Inicializar cliente de Supabase
-const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-
-// Verificar si Supabase está configurado
-if (!supabase) {
-    console.error('⚠️ Supabase no está configurado correctamente. Verifica que hayas incluido el SDK.');
+// Inicializar Supabase (solo si existe el SDK)
+let supabase = null;
+if (typeof window.supabase !== 'undefined') {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 }
