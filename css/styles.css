@@ -1,67 +1,95 @@
-/* 1. ASEGURAR QUE EL MODAL SEA OSCURO */
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0; /* Simplificación de top, left, right, bottom */
-    background: rgba(0, 0, 0, 0.9); /* Más oscuro para resaltar el form */
-    z-index: 2000;
-    padding: 1rem;
-    overflow-y: auto;
-    backdrop-filter: blur(10px); /* Desenfoque más intenso */
+/* ====================================
+   CORRECCIÓN DE CONTENEDORES
+   ==================================== */
+#content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
 }
 
-.modal-content {
-    background: var(--bg-card); /* Usa tu variable #1a1a1a */
-    border: 1px solid var(--neon-green); /* Borde neón para que resalte */
-    border-radius: 1.5rem;
-    max-width: 550px;
-    width: 100%;
-    margin: 2rem auto; /* Centrado vertical */
-    box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
-    color: #fff; /* Asegura texto blanco */
-}
-
-/* 2. ESTILO PARA LOS INPUTS DENTRO DEL FORMULARIO */
-/* Esto evita que se vean blancos por estilos del navegador */
-.modal-form input, 
-.modal-form textarea,
-.modal-form select {
-    background: var(--bg-input) !important;
+/* Tarjeta de Contenido */
+.content-card {
+    background: var(--bg-card);
     border: 1px solid var(--border-color);
-    color: #fff !important;
-    padding: 0.8rem;
-    border-radius: 0.5rem;
-    width: 100%;
-    margin-bottom: 1rem;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
-/* 3. AJUSTE DE LA CUADRÍCULA DE IMÁGENES EN TARJETAS */
+.content-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--neon-green);
+    box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
+}
+
+/* Grilla de imágenes en la tarjeta */
 .content-card-images {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 4px; /* Un poco más de espacio entre fotos */
+    gap: 2px;
     background: #000;
-    border-bottom: 1px solid var(--border-color);
+    height: 240px; /* Altura fija para uniformidad */
 }
 
-/* 4. ESTILO PARA EL TEXTO "NO HAY ANIMALES" O CARGA */
-.loading {
-    grid-column: 1 / -1; /* Ocupa todo el ancho en el grid */
-    text-align: center;
-    padding: 3rem;
-    color: var(--neon-green);
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+.content-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-/* 5. FIX PARA EL BOTÓN DE SUBIR ARCHIVOS */
-input[type="file"]::-webkit-file-upload-button {
-    background: var(--bg-input);
-    color: var(--neon-green);
+/* ====================================
+   CORRECCIÓN DEL FORMULARIO (MODAL)
+   ==================================== */
+.modal {
+    background: rgba(0, 0, 0, 0.85) !important; /* Fondo oscuro detrás del form */
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    background: var(--bg-card) !important; /* Asegura que no sea blanco */
+    border: 1px solid var(--neon-green) !important;
+    color: #fff;
+    box-shadow: 0 0 40px rgba(0, 255, 136, 0.2);
+}
+
+/* Estilo para los campos del formulario */
+.modal-form input, 
+.modal-form textarea {
+    background: var(--bg-input) !important;
+    border: 1px solid var(--border-color) !important;
+    color: #fff !important;
+    border-radius: 0.75rem;
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 12px;
+}
+
+.modal-form input:focus {
+    outline: none;
+    border-color: var(--neon-green) !important;
+}
+
+/* Previsualización de imágenes dentro del modal */
+#imagePreview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.image-preview-item {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
     border: 1px solid var(--neon-green);
-    border-radius: 5px;
-    padding: 0.5rem;
-    cursor: pointer;
-    margin-right: 10px;
+}
+
+.image-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
