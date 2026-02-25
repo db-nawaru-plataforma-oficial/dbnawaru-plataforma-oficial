@@ -1,8 +1,31 @@
 let currentItem = null;
 
+// Función para verificar si el usuario es Admin (Compatible con GitHub Pages)
+async function checkAdminStatus() {
+    const addBtn = document.getElementById('addBtn');
+    
+    // Obtenemos la sesión de forma asíncrona
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    // Verificamos si existe la función isAdmin en auth.js y si hay sesión
+    const esAdmin = session && typeof isAdmin === 'function' && isAdmin();
+
+    if (addBtn) {
+        if (esAdmin) {
+            addBtn.style.setProperty('display', 'block', 'important');
+        } else {
+            addBtn.style.setProperty('display', 'none', 'important');
+        }
+    }
+    return esAdmin;
+}
+
 async function loadAnimales() {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
+    
+    // Esperamos a verificar el admin antes de dibujar las tarjetas
+    const esAdmin = await checkAdminStatus();
     
     if (!supabase) {
         content.innerHTML = '<p class="loading">⚠️ Error: Supabase no configurado</p>';
@@ -20,8 +43,8 @@ async function loadAnimales() {
         
         loading.style.display = 'none';
         
-        if (data.length === 0) {
-            content.innerHTML = '<p class="loading">No hay animales espirituales registrados</p>';
+        if (!data || data.length === 0) {
+            content.innerHTML = '<p class="loading">No hay animales registrados</p>';
             return;
         }
         
@@ -31,9 +54,9 @@ async function loadAnimales() {
                     <div class="content-card-images">
                         ${animal.imagenes.slice(0, 4).map((img, idx) => `
                             <div class="content-card-image">
-                                <img src="${img}" alt="${animal.nombre}">
+                                <img src="${img}" alt="${animal.nombre}" loading="lazy">
                                 ${animal.imagenes.length > 4 && idx === 3 ? 
-                                    `<div style="position:absolute;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;font-weight:bold;">+${animal.imagenes.length - 4}</div>` 
+                                    `<div class="more-photos-overlay">+${animal.imagenes.length - 4}</div>` 
                                 : ''}
                             </div>
                         `).join('')}
@@ -43,7 +66,7 @@ async function loadAnimales() {
                     <h3 class="content-card-title">${animal.nombre}</h3>
                     ${animal.descripcion ? `<p class="content-card-desc">${animal.descripcion}</p>` : ''}
                 </div>
-                ${isAdmin() ? `
+                ${esAdmin ? `
                     <div class="content-card-actions">
                         <button class="btn-edit" onclick="editItem(${animal.id})">✏️ Editar</button>
                         <button class="btn-delete" onclick="deleteItem(${animal.id})">🗑️ Eliminar</button>
@@ -54,11 +77,18 @@ async function loadAnimales() {
         
     } catch (error) {
         console.error('Error:', error);
-        loading.style.display = 'none';
+        if(loading) loading.style.display = 'none';
         content.innerHTML = '<p class="loading">❌ Error al cargar los datos</p>';
     }
 }
 
+// Escuchar cambios de autenticación en tiempo real
+supabase.auth.onAuthStateChange(() => {
+    checkAdminStatus();
+    loadAnimales();
+});
+
+// EVENTOS DE INTERFAZ
 document.getElementById('addBtn')?.addEventListener('click', () => {
     currentItem = null;
     document.getElementById('modalTitle').textContent = 'Agregar Animal Espiritual';
@@ -71,12 +101,7 @@ document.getElementById('closeModal')?.addEventListener('click', () => {
     document.getElementById('modal').classList.remove('active');
 });
 
-document.getElementById('modal')?.addEventListener('click', (e) => {
-    if (e.target.id === 'modal') {
-        document.getElementById('modal').classList.remove('active');
-    }
-});
-
+// Manejo de imágenes (Preview)
 document.getElementById('imagenes')?.addEventListener('change', (e) => {
     const files = Array.from(e.target.files);
     const preview = document.getElementById('imagePreview');
@@ -94,9 +119,9 @@ document.getElementById('imagenes')?.addEventListener('change', (e) => {
     });
 });
 
+// GUARDAR DATOS
 document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
     const submitBtn = e.target.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
     submitBtn.textContent = '⏳ Guardando...';
@@ -104,13 +129,13 @@ document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
     const nombre = document.getElementById('nombre').value.trim();
     const descripcion = document.getElementById('descripcion').value.trim();
     const imagenesFiles = Array.from(document.getElementById('imagenes').files);
-    
     let imagenesUrls = currentItem?.imagenes || [];
     
     try {
+        // Subida de imágenes a Storage
         if (imagenesFiles.length > 0) {
             for (const file of imagenesFiles) {
-                const fileName = `animales/${Date.now()}_${Math.random().toString(36).substr(2, 9)}_${file.name}`;
+                const fileName = `animales/${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
                 const { error: uploadError } = await supabase.storage
                     .from('imagenes')
                     .upload(fileName, file);
@@ -125,24 +150,13 @@ document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
             }
         }
         
-        const itemData = {
-            nombre,
-            descripcion,
-            imagenes: imagenesUrls
-        };
+        const itemData = { nombre, descripcion, imagenes: imagenesUrls };
         
         if (currentItem) {
-            const { error } = await supabase
-                .from('animales_espirituales')
-                .update(itemData)
-                .eq('id', currentItem.id);
-            
+            const { error } = await supabase.from('animales_espirituales').update(itemData).eq('id', currentItem.id);
             if (error) throw error;
         } else {
-            const { error } = await supabase
-                .from('animales_espirituales')
-                .insert([itemData]);
-            
+            const { error } = await supabase.from('animales_espirituales').insert([itemData]);
             if (error) throw error;
         }
         
@@ -150,66 +164,27 @@ document.getElementById('itemForm')?.addEventListener('submit', async (e) => {
         loadAnimales();
         
     } catch (error) {
-        console.error('Error:', error);
-        alert('❌ Error al guardar: ' + error.message);
+        alert('❌ Error: ' + error.message);
     } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = '💾 Guardar';
     }
 });
 
-async function editItem(id) {
+// Funciones globales para botones dinámicos
+window.editItem = async (id) => {
     try {
-        const { data, error } = await supabase
-            .from('animales_espirituales')
-            .select('*')
-            .eq('id', id)
-            .single();
-        
+        const { data, error } = await supabase.from('animales_espirituales').select('*').eq('id', id).single();
         if (error) throw error;
         
         currentItem = data;
-        document.getElementById('modalTitle').textContent = 'Editar Animal Espiritual';
-        document.getElementById('nombre').value = data.nombre || '';
-        document.getElementById('descripcion').value = data.descripcion || '';
-        
-        const preview = document.getElementById('imagePreview');
-        preview.innerHTML = '';
-        
-        if (data.imagenes && data.imagenes.length > 0) {
-            data.imagenes.forEach(img => {
-                const div = document.createElement('div');
-                div.className = 'image-preview-item';
-                div.innerHTML = `<img src="${img}" alt="Preview">`;
-                preview.appendChild(div);
-            });
-        }
-        
+        document.getElementById('modalTitle').textContent = 'Editar Animal';
+        document.getElementById('nombre').value = data.nombre;
+        document.getElementById('descripcion').value = data.descripcion;
         document.getElementById('modal').classList.add('active');
-        
-    } catch (error) {
-        console.error('Error:', error);
-        alert('❌ Error al cargar el animal espiritual');
-    }
-}
+    } catch (e) { alert("Error al cargar datos"); }
+};
 
-async function deleteItem(id) {
-    if (!confirm('¿Estás seguro de eliminar este animal espiritual?')) return;
-    
-    try {
-        const { error } = await supabase
-            .from('animales_espirituales')
-            .delete()
-            .eq('id', id);
-        
-        if (error) throw error;
-        
-        loadAnimales();
-        
-    } catch (error) {
-        console.error('Error:', error);
-        alert('❌ Error al eliminar');
-    }
-}
-
-loadAnimales();
+window.deleteItem = async (id) => {
+    if (confirm('¿Eliminar este registro?')) {
+        await supabase.from('animales_espirituales').delete().eq('id', id);
