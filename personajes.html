@@ -117,7 +117,7 @@
     <div class="toast" id="toast"></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const SUPABASE_URL='https://TU_PROYECTO.supabase.co',SUPABASE_KEY='TU_ANON_KEY',TABLE_NAME='personajes',STORAGE_BUCKET='imagenes';
+        const SUPABASE_URL='https://shnwanhkuphlcevxnlvh.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNobndhbmhrdXBobGNldnhubHZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3OTk2NTIsImV4cCI6MjA4NzM3NTY1Mn0.sUfY3j1wQS4-rjWAxY5a7m4ADGD2n2tYJSwEW0nfNNQ',TABLE_NAME='personajes',STORAGE_BUCKET='imagenes';
         const{createClient}=supabase,sb=createClient(SUPABASE_URL,SUPABASE_KEY);
         let isAdmin=false,editingId=null,newFiles=[];
         const logoutBtn=document.getElementById('logoutBtn'),loginIcon=document.getElementById('loginIcon'),addBtn=document.getElementById('addBtn'),loadingEl=document.getElementById('loading'),contentEl=document.getElementById('content'),modal=document.getElementById('modal'),modalTitle=document.getElementById('modalTitle'),closeModalBtn=document.getElementById('closeModal'),saveBtn=document.getElementById('saveBtn'),nombreInput=document.getElementById('nombre'),aliasInput=document.getElementById('alias'),personalidadIn=document.getElementById('personalidad'),poderInput=document.getElementById('poder'),habilidadesIn=document.getElementById('habilidades'),caracteristicasIn=document.getElementById('caracteristicas'),imagenesInput=document.getElementById('imagenes'),imgPreview=document.getElementById('imagePreview'),toastEl=document.getElementById('toast');
