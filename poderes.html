@@ -112,7 +112,7 @@
     <div class="toast" id="toast"></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const SUPABASE_URL='https://TU_PROYECTO.supabase.co',SUPABASE_KEY='TU_ANON_KEY',TABLE_NAME='poderes',STORAGE_BUCKET='imagenes';
+        const SUPABASE_URL='https://shnwanhkuphlcevxnlvh.supabase.co',SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNobndhbmhrdXBobGNldnhubHZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3OTk2NTIsImV4cCI6MjA4NzM3NTY1Mn0.sUfY3j1wQS4-rjWAxY5a7m4ADGD2n2tYJSwEW0nfNNQ',TABLE_NAME='poderes',STORAGE_BUCKET='imagenes';
         const{createClient}=supabase,sb=createClient(SUPABASE_URL,SUPABASE_KEY);
         let isAdmin=false,editingId=null,newFiles=[];
         const ELEMENT_COLORS={fuego:'#ff4400',fire:'#ff4400',agua:'#00aaff',water:'#00aaff',tierra:'#88aa00',earth:'#88aa00',aire:'#00ccff',air:'#00ccff',viento:'#00ccff',wind:'#00ccff',rayo:'#ffee00',thunder:'#ffee00',lightning:'#ffee00',hielo:'#aaeeff',ice:'#aaeeff',espiritu:'#cc44ff',spirit:'#cc44ff',oscuridad:'#9900ff',dark:'#9900ff',shadow:'#9900ff',luz:'#ffffaa',light:'#ffffaa',naturaleza:'#00ff44',nature:'#00ff44'};
