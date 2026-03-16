@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nawaru - Reinos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* ── RESET & BASE ── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --gold:        #c9a84c;
+            --gold-light:  #e8cc7a;
+            --gold-dark:   #8a6820;
+            --ink:         #0d0b07;
+            --parchment:   #1a1508;
+            --mist:        #2a2010;
+            --text:        #d4c49a;
+            --text-dim:    #8a7a55;
+            --ember:       #e85c20;
+            --danger:      #c0392b;
+            --danger-hover:#e74c3c;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Crimson Text', Georgia, serif;
+            background-color: var(--ink);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 20% 80%, rgba(58,122,173,0.04) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(13,11,7,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(201,168,76,0.2);
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            height: 60px;
+        }
+
+        .logo-text {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.2em;
+            text-decoration: none;
+            text-shadow: 0 0 20px rgba(201,168,76,0.4);
+            transition: text-shadow 0.3s;
+        }
+        .logo-text:hover { text-shadow: 0 0 30px rgba(201,168,76,0.7); }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .login-icon {
+            color: var(--text-dim);
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .login-icon:hover { color: var(--gold); }
+
+        .btn-logout {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            background: none;
+            border: 1px solid rgba(201,168,76,0.3);
+            color: var(--text-dim);
+            padding: 0.35rem 0.8rem;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-logout:hover {
+            border-color: var(--danger);
+            color: var(--danger-hover);
+        }
+
+        /* ── MAIN CONTAINER ── */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 5rem;
+        }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid rgba(201,168,76,0.2);
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .page-icon { font-size: 2rem; }
+
+        .page-title h1 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            text-shadow: 0 0 20px rgba(201,168,76,0.3);
+        }
+
+        .btn-add {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            background: rgba(201,168,76,0.12);
+            border: 1px solid rgba(201,168,76,0.4);
+            color: var(--gold-light);
+            padding: 0.5rem 1.2rem;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        .btn-add:hover {
+            background: rgba(201,168,76,0.22);
+            border-color: var(--gold);
+            box-shadow: 0 0 12px rgba(201,168,76,0.2);
+        }
+
+        /* ── LOADING / EMPTY ── */
+        .loading, .empty-state {
+            text-align: center;
+            padding: 4rem 1rem;
+            font-family: 'Crimson Text', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--text-dim);
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
+            margin-left: 8px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50%       { opacity: 1;   transform: scale(1.2); }
+        }
+
+        /* ── CONTENT LIST ── */
+        .content-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* ── ITEM CARD ── */
+        .item-card {
+            position: relative;
+            background: rgba(26,21,8,0.8);
+            border: 1px solid rgba(201,168,76,0.18);
+            border-radius: 2px;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+            animation: fadeUp 0.5s ease both;
+        }
+
+        .item-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(201,168,76,0.45);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.4), 0 0 16px rgba(201,168,76,0.06);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .item-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+            filter: brightness(0.85) sepia(0.15);
+            transition: filter 0.3s;
+        }
+        .item-card:hover .item-image { filter: brightness(0.95) sepia(0.05); }
+
+        .item-image-placeholder {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--parchment), var(--mist));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: rgba(201,168,76,0.2);
+        }
+
+        .item-body {
+            padding: 1.3rem 1.3rem 1rem;
+        }
+
+        .item-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gold-light);
+            letter-spacing: 0.08em;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-desc {
+            font-family: 'Crimson Text', serif;
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            line-height: 1.55;
+        }
+
+        /* Admin actions */
+        .item-actions {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem 1.3rem 1rem;
+            border-top: 1px solid rgba(201,168,76,0.1);
+        }
+
+        .btn-edit, .btn-delete {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            border: none;
+            padding: 0.35rem 0.9rem;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-edit {
+            background: rgba(201,168,76,0.12);
+            color: var(--gold-light);
+            border: 1px solid rgba(201,168,76,0.3);
+        }
+        .btn-edit:hover { background: rgba(201,168,76,0.25); border-color: var(--gold); }
+
+        .btn-delete {
+            background: rgba(192,57,43,0.1);
+            color: #e07070;
+            border: 1px solid rgba(192,57,43,0.3);
+        }
+        .btn-delete:hover { background: rgba(192,57,43,0.25); border-color: var(--danger-hover); }
+
+        /* ── MODAL ── */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(5,4,2,0.85);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .modal.open { display: flex; }
+
+        .modal-content {
+            background: var(--parchment);
+            border: 1px solid rgba(201,168,76,0.3);
+            border-radius: 2px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalIn 0.25s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.3rem 1.5rem;
+            border-bottom: 1px solid rgba(201,168,76,0.2);
+        }
+
+        .modal-header h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gold-light);
+            letter-spacing: 0.1em;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 1.4rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+            padding: 0 0.2rem;
+        }
+        .modal-close:hover { color: var(--gold); }
+
+        /* ── FORM ── */
+        .modal-form {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        .form-group label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem;
+            letter-spacing: 0.12em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            background: rgba(13,11,7,0.7);
+            border: 1px solid rgba(201,168,76,0.25);
+            border-radius: 2px;
+            color: var(--text);
+            font-family: 'Crimson Text', serif;
+            font-size: 1rem;
+            padding: 0.6rem 0.85rem;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            resize: vertical;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus {
+            border-color: rgba(201,168,76,0.6);
+            box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+        }
+
+        .form-group input[type="file"] {
+            background: rgba(13,11,7,0.5);
+            border: 1px dashed rgba(201,168,76,0.25);
+            border-radius: 2px;
+            color: var(--text-dim);
+            font-family: 'Crimson Text', serif;
+            font-size: 0.9rem;
+            padding: 0.55rem 0.85rem;
+            width: 100%;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input[type="file"]:hover { border-color: rgba(201,168,76,0.5); }
+
+        .image-preview {
+            margin-top: 0.5rem;
+        }
+        .image-preview img {
+            max-width: 100%;
+            max-height: 160px;
+            object-fit: cover;
+            border: 1px solid rgba(201,168,76,0.2);
+            border-radius: 2px;
+        }
+
+        .btn-primary {
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            background: rgba(201,168,76,0.15);
+            border: 1px solid rgba(201,168,76,0.5);
+            color: var(--gold-light);
+            padding: 0.75rem 1.5rem;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.25s;
+            align-self: flex-end;
+        }
+        .btn-primary:hover {
+            background: rgba(201,168,76,0.28);
+            border-color: var(--gold);
+            box-shadow: 0 0 16px rgba(201,168,76,0.2);
+        }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 300;
+            font-family: 'Cinzel', serif;
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            padding: 0.75rem 1.3rem;
+            border-radius: 2px;
+            border-left: 3px solid var(--gold);
+            background: rgba(26,21,8,0.97);
+            color: var(--text);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toast.error { border-color: var(--danger-hover); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 500px) {
+            .content-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html" class="logo-text">NAWARU</a>
+            </div>
+            <div class="nav-actions">
+                <button class="btn-logout" id="logoutBtn" style="display:none;">Cerrar Sesión</button>
+                <a href="admin.html" class="login-icon" id="loginIcon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <div class="page-title">
+                <span class="page-icon">👑</span>
+                <h1>Reinos</h1>
+            </div>
+            <button class="btn-add" id="addBtn" style="display:none;">+ Agregar</button>
+        </div>
+
+        <div id="loading" class="loading">Cargando</div>
+        <div id="content" class="content-list"></div>
+    </main>
+
+    <!-- Modal -->
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Agregar Reino</h2>
+                <button type="button" class="modal-close" id="closeModal" aria-label="Cerrar">&times;</button>
+            </div>
+            <div class="modal-form">
+                <div class="form-group">
+                    <label for="nombre">Nombre del Reino</label>
+                    <input type="text" id="nombre" placeholder="Ej: Reino del Norte">
+                </div>
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" rows="4" placeholder="Describe el reino..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="imagen">Imagen</label>
+                    <input type="file" id="imagen" accept="image/*">
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+                <button type="button" class="btn-primary" id="saveBtn">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // ══════════════════════════════════════════════════
+        //  CONFIGURACIÓN — edita estas dos líneas con tus
+        //  credenciales de Supabase (Project URL y anon key)
+        // ══════════════════════════════════════════════════
+        const SUPABASE_URL  = 'https://TU_PROYECTO.supabase.co';
+        const SUPABASE_KEY  = 'TU_ANON_KEY';
+        const TABLE_NAME    = 'reinos';       // nombre de tu tabla en Supabase
+        const STORAGE_BUCKET = 'imagenes';    // nombre del bucket en Storage (si usas)
+
+        // ── Init Supabase ──
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // ── Estado ──
+        let isAdmin    = false;
+        let editingId  = null;
+        let imageBase64 = null;
+
+        // ── Elementos ──
+        const logoutBtn   = document.getElementById('logoutBtn');
+        const loginIcon   = document.getElementById('loginIcon');
+        const addBtn      = document.getElementById('addBtn');
+        const loadingEl   = document.getElementById('loading');
+        const contentEl   = document.getElementById('content');
+        const modal       = document.getElementById('modal');
+        const modalTitle  = document.getElementById('modalTitle');
+        const closeModal  = document.getElementById('closeModal');
+        const saveBtn     = document.getElementById('saveBtn');
+        const nombreInput = document.getElementById('nombre');
+        const descInput   = document.getElementById('descripcion');
+        const imagenInput = document.getElementById('imagen');
+        const imgPreview  = document.getElementById('imagePreview');
+        const toastEl     = document.getElementById('toast');
+
+        // ── Utilidades ──
+        function showToast(msg, type = 'ok') {
+            toastEl.textContent = msg;
+            toastEl.className = 'toast show' + (type === 'error' ? ' error' : '');
+            setTimeout(() => { toastEl.className = 'toast'; }, 3000);
+        }
+
+        // ── Auth ──
+        async function checkAuth() {
+            const { data: { session } } = await sb.auth.getSession();
+            isAdmin = !!session;
+            logoutBtn.style.display = isAdmin ? 'inline-block' : 'none';
+            loginIcon.style.display = isAdmin ? 'none'         : 'flex';
+            addBtn.style.display    = isAdmin ? 'inline-block' : 'none';
+        }
+
+        logoutBtn.addEventListener('click', async () => {
+            await sb.auth.signOut();
+            isAdmin = false;
+            logoutBtn.style.display = 'none';
+            loginIcon.style.display = 'flex';
+            addBtn.style.display    = 'none';
+            renderItems(await fetchItems());
+            showToast('Sesión cerrada');
+        });
+
+        // ── Fetch ──
+        async function fetchItems() {
+            const { data, error } = await sb
+                .from(TABLE_NAME)
+                .select('*')
+                .order('created_at', { ascending: false });
+            if (error) { showToast('Error al cargar datos', 'error'); return []; }
+            return data || [];
+        }
+
+        // ── Render ──
+        function renderItems(items) {
+            loadingEl.style.display = 'none';
+            contentEl.innerHTML = '';
+
+            if (!items.length) {
+                contentEl.innerHTML = '<p class="empty-state">Aún no hay reinos registrados.</p>';
+                return;
+            }
+
+            items.forEach((item, i) => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.style.animationDelay = `${i * 0.07}s`;
+
+                const imgHTML = item.imagen_url
+                    ? `<img src="${item.imagen_url}" alt="${item.nombre}" class="item-image" loading="lazy">`
+                    : `<div class="item-image-placeholder">👑</div>`;
+
+                const actionsHTML = isAdmin ? `
+                    <div class="item-actions">
+                        <button class="btn-edit"   data-id="${item.id}">✏ Editar</button>
+                        <button class="btn-delete" data-id="${item.id}">✕ Eliminar</button>
+                    </div>` : '';
+
+                card.innerHTML = `
+                    ${imgHTML}
+                    <div class="item-body">
+                        <div class="item-name">${item.nombre || '—'}</div>
+                        <p class="item-desc">${item.descripcion || ''}</p>
+                    </div>
+                    ${actionsHTML}
+                `;
+                contentEl.appendChild(card);
+            });
+
+            // Botones admin
+            document.querySelectorAll('.btn-edit').forEach(btn =>
+                btn.addEventListener('click', () => openEdit(btn.dataset.id, items))
+            );
+            document.querySelectorAll('.btn-delete').forEach(btn =>
+                btn.addEventListener('click', () => deleteItem(btn.dataset.id))
+            );
+        }
+
+        // ── Modal helpers ──
+        function openModal(title) {
+            modalTitle.textContent = title;
+            modal.classList.add('open');
+            nombreInput.focus();
+        }
+
+        function closeModalFn() {
+            modal.classList.remove('open');
+            nombreInput.value = '';
+            descInput.value   = '';
+            imagenInput.value = '';
+            imgPreview.innerHTML = '';
+            editingId   = null;
+            imageBase64 = null;
+        }
+
+        addBtn.addEventListener('click', () => {
+            editingId = null;
+            openModal('Agregar Reino');
+        });
+
+        closeModal.addEventListener('click', closeModalFn);
+        modal.addEventListener('click', e => { if (e.target === modal) closeModalFn(); });
+
+        // Preview imagen
+        imagenInput.addEventListener('change', () => {
+            const file = imagenInput.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                imageBase64 = e.target.result;
+                imgPreview.innerHTML = `<img src="${imageBase64}" alt="Vista previa">`;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // ── Open edit ──
+        function openEdit(id, items) {
+            const item = items.find(r => r.id == id);
+            if (!item) return;
+            editingId = id;
+            nombreInput.value = item.nombre     || '';
+            descInput.value   = item.descripcion || '';
+            imgPreview.innerHTML = item.imagen_url
+                ? `<img src="${item.imagen_url}" alt="imagen actual">`
+                : '';
+            openModal('Editar Reino');
+        }
+
+        // ── Save ──
+        saveBtn.addEventListener('click', async () => {
+            const nombre      = nombreInput.value.trim();
+            const descripcion = descInput.value.trim();
+
+            if (!nombre) { showToast('El nombre es obligatorio', 'error'); return; }
+
+            saveBtn.textContent = '⏳ Guardando...';
+            saveBtn.disabled    = true;
+
+            let imagen_url = null;
+
+            // Subir imagen si hay una nueva
+            if (imagenInput.files[0]) {
+                const file     = imagenInput.files[0];
+                const ext      = file.name.split('.').pop();
+                const path     = `reinos/${Date.now()}.${ext}`;
+                const { error: upErr } = await sb.storage
+                    .from(STORAGE_BUCKET)
+                    .upload(path, file, { upsert: true });
+
+                if (upErr) {
+                    showToast('Error al subir imagen', 'error');
+                } else {
+                    const { data: urlData } = sb.storage
+                        .from(STORAGE_BUCKET)
+                        .getPublicUrl(path);
+                    imagen_url = urlData.publicUrl;
+                }
+            }
+
+            const payload = { nombre, descripcion };
+            if (imagen_url) payload.imagen_url = imagen_url;
+
+            let error;
+            if (editingId) {
+                ({ error } = await sb.from(TABLE_NAME).update(payload).eq('id', editingId));
+            } else {
+                ({ error } = await sb.from(TABLE_NAME).insert([payload]));
+            }
+
+            saveBtn.textContent = '💾 Guardar';
+            saveBtn.disabled    = false;
+
+            if (error) {
+                showToast('Error al guardar: ' + error.message, 'error');
+            } else {
+                showToast(editingId ? 'Reino actualizado' : 'Reino agregado');
+                closeModalFn();
+                renderItems(await fetchItems());
+            }
+        });
+
+        // ── Delete ──
+        async function deleteItem(id) {
+            if (!confirm('¿Eliminar este reino?')) return;
+            const { error } = await sb.from(TABLE_NAME).delete().eq('id', id);
+            if (error) {
+                showToast('Error al eliminar', 'error');
+            } else {
+                showToast('Reino eliminado');
+                renderItems(await fetchItems());
+            }
+        }
+
+        // ── Init ──
+        (async () => {
+            await checkAuth();
+            const items = await fetchItems();
+            renderItems(items);
+        })();
+    </script>
+</body>
+</html>
