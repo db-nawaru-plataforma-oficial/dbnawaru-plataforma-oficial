@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nawaru - Acceso Administrador</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --gold:       #c9a84c;
+            --gold-light: #e8cc7a;
+            --ink:        #0d0b07;
+            --parchment:  #1a1508;
+            --mist:       #2a2010;
+            --text:       #d4c49a;
+            --text-dim:   #8a7a55;
+            --danger:     #c0392b;
+            --danger-hover:#e74c3c;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Crimson Text', Georgia, serif;
+            background-color: var(--ink);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            overflow: hidden;
+        }
+
+        /* Fondo atmosférico */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(ellipse 60% 60% at 50% 40%, rgba(201,168,76,0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 20% 80%, rgba(58,122,173,0.04) 0%, transparent 60%),
+                radial-gradient(ellipse 30% 30% at 80% 20%, rgba(232,92,32,0.03) 0%, transparent 50%);
+            pointer-events: none; z-index: 0;
+        }
+
+        /* ── LOGIN BOX ── */
+        .login-container {
+            position: relative; z-index: 1;
+            width: 100%; max-width: 400px;
+        }
+
+        .login-box {
+            background: rgba(26,21,8,0.92);
+            border: 1px solid rgba(201,168,76,0.25);
+            border-radius: 2px;
+            padding: 3rem 2.5rem 2.5rem;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(201,168,76,0.05);
+            animation: boxIn 0.5s ease;
+        }
+
+        @keyframes boxIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0)  scale(1); }
+        }
+
+        /* Línea decorativa superior */
+        .login-box::before {
+            content: '';
+            position: absolute; top: 0; left: 10%; right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .login-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.2rem;
+            display: block;
+            filter: drop-shadow(0 0 12px rgba(201,168,76,0.4));
+            animation: iconGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes iconGlow {
+            from { filter: drop-shadow(0 0 8px  rgba(201,168,76,0.3)); }
+            to   { filter: drop-shadow(0 0 20px rgba(201,168,76,0.6)); }
+        }
+
+        .login-title {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.1rem; font-weight: 700;
+            color: var(--gold); letter-spacing: 0.15em;
+            text-shadow: 0 0 20px rgba(201,168,76,0.3);
+            margin-bottom: 0.4rem;
+        }
+
+        .login-subtitle {
+            font-style: italic; font-size: 0.9rem;
+            color: var(--text-dim); margin-bottom: 2rem;
+        }
+
+        /* Divider */
+        .login-divider {
+            width: 100px; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(201,168,76,0.4), transparent);
+            margin: 0 auto 2rem;
+        }
+
+        /* ── FORM ── */
+        .login-form {
+            display: flex; flex-direction: column; gap: 1.1rem;
+            text-align: left;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+
+        .form-group label {
+            font-family: 'Cinzel', serif; font-size: 0.68rem;
+            letter-spacing: 0.12em; color: var(--text-dim); text-transform: uppercase;
+        }
+
+        .form-group input {
+            background: rgba(13,11,7,0.8);
+            border: 1px solid rgba(201,168,76,0.22);
+            border-radius: 2px; color: var(--text);
+            font-family: 'Crimson Text', serif; font-size: 1rem;
+            padding: 0.65rem 0.9rem; width: 100%;
+            outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-group input:focus {
+            border-color: rgba(201,168,76,0.55);
+            box-shadow: 0 0 0 3px rgba(201,168,76,0.07);
+        }
+        .form-group input::placeholder { color: var(--text-dim); opacity: 0.6; }
+
+        /* ── ERROR MSG ── */
+        .error-msg {
+            display: none;
+            background: rgba(192,57,43,0.12);
+            border: 1px solid rgba(192,57,43,0.35);
+            border-radius: 2px;
+            padding: 0.65rem 0.9rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem; letter-spacing: 0.08em;
+            color: #e07070; text-align: center;
+            animation: shake 0.35s ease;
+        }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            25%      { transform: translateX(-6px); }
+            75%      { transform: translateX(6px); }
+        }
+
+        /* ── SUBMIT BUTTON ── */
+        .btn-primary {
+            font-family: 'Cinzel', serif; font-size: 0.82rem;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            background: rgba(201,168,76,0.14);
+            border: 1px solid rgba(201,168,76,0.5);
+            color: var(--gold-light);
+            padding: 0.85rem 1.5rem; border-radius: 2px;
+            cursor: pointer; transition: all 0.25s;
+            margin-top: 0.4rem; width: 100%;
+        }
+        .btn-primary:hover {
+            background: rgba(201,168,76,0.26);
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(201,168,76,0.18);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5; cursor: not-allowed;
+        }
+
+        /* ── BACK LINK ── */
+        .back-link {
+            display: block; margin-top: 1.5rem; text-align: center;
+            font-family: 'Cinzel', serif; font-size: 0.68rem;
+            letter-spacing: 0.1em; color: var(--text-dim);
+            text-decoration: none; transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--gold); }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <span class="login-icon">🔒</span>
+            <h1 class="login-title">Acceso Administrador</h1>
+            <p class="login-subtitle">Área restringida de Nawaru</p>
+            <div class="login-divider"></div>
+
+            <div id="errorMsg" class="error-msg"></div>
+
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" id="email" placeholder="admin@nawaru.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+                </div>
+                <button class="btn-primary" id="loginBtn">Iniciar Sesión</button>
+            </div>
+
+            <a href="index.html" class="back-link">← Volver al inicio</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ══════════════════════════════════════════════
+        //  CONFIGURACIÓN — reemplaza con tus credenciales
+        // ══════════════════════════════════════════════
+        const SUPABASE_URL = 'https://TU_PROYECTO.supabase.co';
+        const SUPABASE_KEY = 'TU_ANON_KEY';
+
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const emailInput = document.getElementById('email');
+        const passInput  = document.getElementById('password');
+        const loginBtn   = document.getElementById('loginBtn');
+        const errorMsg   = document.getElementById('errorMsg');
+
+        function showError(msg) {
+            errorMsg.textContent = msg;
+            errorMsg.style.display = 'block';
+            // Re-trigger shake animation
+            errorMsg.style.animation = 'none';
+            errorMsg.offsetHeight; // reflow
+            errorMsg.style.animation = '';
+        }
+
+        function hideError() { errorMsg.style.display = 'none'; }
+
+        // Si ya hay sesión activa, redirigir directamente
+        (async () => {
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) window.location.href = 'index.html';
+        })();
+
+        loginBtn.addEventListener('click', async () => {
+            hideError();
+            const email    = emailInput.value.trim();
+            const password = passInput.value;
+
+            if (!email || !password) {
+                showError('Por favor completa todos los campos.');
+                return;
+            }
+
+            loginBtn.textContent = 'Verificando...';
+            loginBtn.disabled    = true;
+
+            const { error } = await sb.auth.signInWithPassword({ email, password });
+
+            loginBtn.textContent = 'Iniciar Sesión';
+            loginBtn.disabled    = false;
+
+            if (error) {
+                showError('Credenciales incorrectas. Inténtalo de nuevo.');
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Permitir Enter en los campos
+        [emailInput, passInput].forEach(el =>
+            el.addEventListener('keydown', e => { if (e.key === 'Enter') loginBtn.click(); })
+        );
+    </script>
+</body>
+</html>
