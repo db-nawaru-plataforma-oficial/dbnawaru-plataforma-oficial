@@ -147,24 +147,19 @@
             pointer-events: none;
         }
 
-        .hero-title {
-            font-family: 'Cinzel Decorative', serif;
-            font-size: clamp(3.5rem, 12vw, 8rem);
-            font-weight: 900;
-            color: var(--gold);
-            letter-spacing: 0.25em;
-            line-height: 1;
-            text-shadow:
-                0 0 40px rgba(201,168,76,0.5),
-                0 0 80px rgba(201,168,76,0.2),
-                0 2px 4px rgba(0,0,0,0.8);
-            animation: titleGlow 4s ease-in-out infinite alternate;
-        }
+.hero-title {
+    background: linear-gradient(135deg, #00ff88, #00ccff, #ff2244);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    animation: neonPulse 3s ease-in-out infinite alternate;
+}
 
-        @keyframes titleGlow {
-            from { text-shadow: 0 0 40px rgba(201,168,76,0.5), 0 0 80px rgba(201,168,76,0.2), 0 2px 4px rgba(0,0,0,0.8); }
-            to   { text-shadow: 0 0 60px rgba(201,168,76,0.7), 0 0 120px rgba(201,168,76,0.3), 0 2px 4px rgba(0,0,0,0.8); }
-        }
+@keyframes neonPulse {
+    from { filter: drop-shadow(0 0 8px #00ff88) drop-shadow(0 0 20px #00ccff); }
+    to   { filter: drop-shadow(0 0 16px #00ffcc) drop-shadow(0 0 40px #ff2244); }
+}
 
         .hero-subtitle {
             font-family: 'Crimson Text', serif;
