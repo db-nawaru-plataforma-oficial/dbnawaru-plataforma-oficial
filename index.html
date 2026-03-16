@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nawaru - Inicio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* ── RESET & BASE ── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --gold:        #c9a84c;
+            --gold-light:  #e8cc7a;
+            --gold-dark:   #8a6820;
+            --ink:         #0d0b07;
+            --parchment:   #1a1508;
+            --mist:        #2a2010;
+            --text:        #d4c49a;
+            --text-dim:    #8a7a55;
+            --ember:       #e85c20;
+            --sky:         #3a7aad;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Crimson Text', Georgia, serif;
+            background-color: var(--ink);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Fondo texturizado */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 20% 80%, rgba(58,122,173,0.04) 0%, transparent 60%),
+                radial-gradient(ellipse 30% 30% at 80% 60%, rgba(232,92,32,0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(13,11,7,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(201,168,76,0.2);
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            height: 60px;
+        }
+
+        .logo-text {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.2em;
+            text-shadow: 0 0 20px rgba(201,168,76,0.4);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .login-icon {
+            color: var(--text-dim);
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .login-icon:hover { color: var(--gold); }
+
+        .menu-btn {
+            background: none;
+            border: 1px solid rgba(201,168,76,0.3);
+            color: var(--gold);
+            font-size: 1.1rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .menu-btn:hover {
+            background: rgba(201,168,76,0.1);
+            border-color: var(--gold);
+        }
+
+        .nav-menu {
+            display: none;
+            flex-direction: column;
+            background: rgba(13,11,7,0.97);
+            border-top: 1px solid rgba(201,168,76,0.15);
+            padding: 0.75rem 1.5rem 1rem;
+        }
+        .nav-menu.active { display: flex; }
+
+        .nav-menu a {
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.12em;
+            color: var(--text-dim);
+            text-decoration: none;
+            padding: 0.55rem 0;
+            border-bottom: 1px solid rgba(201,168,76,0.08);
+            transition: color 0.2s, padding-left 0.2s;
+        }
+        .nav-menu a:last-child { border-bottom: none; }
+        .nav-menu a:hover {
+            color: var(--gold-light);
+            padding-left: 0.5rem;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 6rem 1.5rem 4rem;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 80% at 50% 50%, rgba(201,168,76,0.07) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-title {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: clamp(3.5rem, 12vw, 8rem);
+            font-weight: 900;
+            color: var(--gold);
+            letter-spacing: 0.25em;
+            line-height: 1;
+            text-shadow:
+                0 0 40px rgba(201,168,76,0.5),
+                0 0 80px rgba(201,168,76,0.2),
+                0 2px 4px rgba(0,0,0,0.8);
+            animation: titleGlow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { text-shadow: 0 0 40px rgba(201,168,76,0.5), 0 0 80px rgba(201,168,76,0.2), 0 2px 4px rgba(0,0,0,0.8); }
+            to   { text-shadow: 0 0 60px rgba(201,168,76,0.7), 0 0 120px rgba(201,168,76,0.3), 0 2px 4px rgba(0,0,0,0.8); }
+        }
+
+        .hero-subtitle {
+            font-family: 'Crimson Text', serif;
+            font-style: italic;
+            font-size: clamp(1rem, 3vw, 1.4rem);
+            color: var(--text-dim);
+            letter-spacing: 0.3em;
+            margin-top: 1rem;
+            text-transform: uppercase;
+        }
+
+        .hero-divider {
+            width: 180px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 2rem auto 0;
+            position: relative;
+        }
+        .hero-divider::before {
+            content: '✦';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+            color: var(--gold);
+            font-size: 0.7rem;
+            background: var(--ink);
+            padding: 0 0.4rem;
+        }
+
+        /* ── GRID / CARDS ── */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 2.2rem 1.5rem 1.8rem;
+            border: 1px solid rgba(201,168,76,0.2);
+            border-radius: 2px;
+            background: rgba(26,21,8,0.7);
+            text-decoration: none;
+            color: inherit;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(201,168,76,0.05) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(201,168,76,0.5);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 20px rgba(201,168,76,0.07);
+        }
+        .card:hover::before { opacity: 1; }
+        .card:hover::after  { transform: scaleX(1); }
+
+        .card-icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.9rem;
+            filter: drop-shadow(0 0 8px rgba(201,168,76,0.3));
+        }
+
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            color: var(--gold-light);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .card-desc {
+            font-family: 'Crimson Text', serif;
+            font-style: italic;
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        /* ── ANIMACIÓN ENTRADA ── */
+        .card {
+            animation: fadeUp 0.6s ease both;
+        }
+        .grid .card:nth-child(1) { animation-delay: 0.05s; }
+        .grid .card:nth-child(2) { animation-delay: 0.12s; }
+        .grid .card:nth-child(3) { animation-delay: 0.19s; }
+        .grid .card:nth-child(4) { animation-delay: 0.26s; }
+        .grid .card:nth-child(5) { animation-delay: 0.33s; }
+        .grid .card:nth-child(6) { animation-delay: 0.40s; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 500px) {
+            .grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+            .card { padding: 1.5rem 1rem 1.3rem; }
+            .card-icon { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text">NAWARU</span>
+            </div>
+            <div class="nav-actions">
+                <a href="admin.html" class="login-icon" aria-label="Admin">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+                <button class="menu-btn" id="menuBtn" aria-label="Menú">☰</button>
+            </div>
+        </div>
+        <div class="nav-menu" id="navMenu">
+            <a href="reinos.html">Reinos</a>
+            <a href="personajes.html">Personajes</a>
+            <a href="razas.html">Razas</a>
+            <a href="animales.html">Animales Espirituales</a>
+            <a href="mapas.html">Mapas</a>
+            <a href="poderes.html">Poderes Elementales</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1 class="hero-title">NAWARU</h1>
+        <p class="hero-subtitle">Un universo por descubrir</p>
+        <div class="hero-divider"></div>
+    </header>
+
+    <main class="container">
+        <div class="grid">
+            <a href="reinos.html" class="card">
+                <div class="card-icon">👑</div>
+                <h3 class="card-title">Reinos</h3>
+                <p class="card-desc">Explora los reinos del mundo</p>
+            </a>
+            <a href="personajes.html" class="card">
+                <div class="card-icon">👥</div>
+                <h3 class="card-title">Personajes</h3>
+                <p class="card-desc">Conoce a los personajes</p>
+            </a>
+            <a href="razas.html" class="card">
+                <div class="card-icon">🧬</div>
+                <h3 class="card-title">Razas</h3>
+                <p class="card-desc">Descubre las razas</p>
+            </a>
+            <a href="animales.html" class="card">
+                <div class="card-icon">✨</div>
+                <h3 class="card-title">Animales Espirituales</h3>
+                <p class="card-desc">Seres místicos</p>
+            </a>
+            <a href="mapas.html" class="card">
+                <div class="card-icon">🗺️</div>
+                <h3 class="card-title">Mapas</h3>
+                <p class="card-desc">Explora el territorio</p>
+            </a>
+            <a href="poderes.html" class="card">
+                <div class="card-icon">🔥</div>
+                <h3 class="card-title">Poderes Elementales</h3>
+                <p class="card-desc">Poderes del universo</p>
+            </a>
+        </div>
+    </main>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const navMenu = document.getElementById('navMenu');
+
+        menuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!navMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
