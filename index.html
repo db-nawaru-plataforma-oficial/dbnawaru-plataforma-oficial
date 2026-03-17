@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nawaru - Inicio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --green:  #00ff88;
+            --cyan:   #00ccff;
+            --red:    #ff2244;
+            --ink:    #000000;
+            --dark:   #050f0a;
+            --mid:    #0a1a10;
+            --text:   #e8fff4;
+            --dim:    #00dd77;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Crimson Text', Georgia, serif;
+            background: var(--ink);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Fondo con partículas estáticas estilo universo */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0;
+            background:
+                radial-gradient(1px 1px at 10% 15%, rgba(0,255,136,.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 25% 40%, rgba(0,204,255,.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 70% 20%, rgba(0,255,136,.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 85% 60%, rgba(255,34,68,.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 50% 80%, rgba(0,204,255,.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 35% 70%, rgba(0,255,136,.3) 0%, transparent 100%),
+                radial-gradient(1px 1px at 90% 85%, rgba(0,255,136,.4) 0%, transparent 100%),
+                radial-gradient(ellipse 100% 50% at 50% 0%, rgba(0,255,136,.04) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,204,255,.03) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* ══════════════════════════════
+           NAVBAR HUD
+        ══════════════════════════════ */
+        .navbar {
+            position: sticky; top: 0; z-index: 200;
+            height: 56px;
+            background: rgba(0,0,0,.94);
+            backdrop-filter: blur(20px);
+        }
+
+        /* Scan line triple */
+        .navbar::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--green), var(--cyan), var(--red), transparent);
+            background-size: 300% 100%;
+            animation: scan 4s linear infinite;
+            box-shadow: 0 0 8px rgba(0,255,136,.5);
+        }
+        .navbar::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0,255,136,.3), transparent);
+        }
+
+        @keyframes scan {
+            0%   { background-position: -300% 0; }
+            100% { background-position: 300% 0; }
+        }
+
+        .nav-inner {
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; height: 100%;
+        }
+
+        /* Orbe Ki */
+        .nav-ki {
+            width: 28px; height: 28px; border-radius: 50%;
+            border: 1.5px solid var(--green);
+            position: relative; flex-shrink: 0;
+            box-shadow: 0 0 8px var(--green), inset 0 0 6px rgba(0,255,136,.2);
+            animation: kiCycle 6s linear infinite;
+        }
+        .nav-ki::before {
+            content: '';
+            position: absolute; inset: 3px; border-radius: 50%;
+            background: radial-gradient(circle, #00ffcc 0%, rgba(0,255,136,.3) 60%, transparent 100%);
+            animation: kiPulse 2s ease-in-out infinite alternate;
+        }
+        @keyframes kiCycle {
+            0%,100%{ border-color:var(--green); box-shadow:0 0 8px var(--green),inset 0 0 6px rgba(0,255,136,.2) }
+            33%    { border-color:var(--cyan);  box-shadow:0 0 8px var(--cyan), inset 0 0 6px rgba(0,204,255,.2) }
+            66%    { border-color:var(--red);   box-shadow:0 0 8px var(--red),  inset 0 0 6px rgba(255,34,68,.2) }
+        }
+        @keyframes kiPulse {
+            from { opacity:.4; transform:scale(.7); }
+            to   { opacity:1;  transform:scale(1.1); }
+        }
+
+        .nav-logo-wrap { display:flex; align-items:center; gap:.7rem; text-decoration:none; }
+
+        .nav-logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem; font-weight: 900; letter-spacing: .3em;
+            background: linear-gradient(90deg, var(--green), var(--cyan), var(--red));
+            background-size: 200% 100%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: logoFlow 5s ease infinite;
+        }
+        @keyframes logoFlow {
+            0%,100%{ background-position:0% 50% }
+            50%    { background-position:100% 50% }
+        }
+
+        /* Links desktop */
+        .nav-links { display:none; align-items:center; gap:.1rem; }
+        @media(min-width:768px){ .nav-links{ display:flex; } }
+
+        .nav-link {
+            font-family: 'Cinzel', serif; font-size:.62rem; letter-spacing:.14em;
+            color: rgba(0,255,136,.5); text-decoration:none; text-transform:uppercase;
+            padding:.4rem .65rem; position:relative; transition:color .2s;
+        }
+        .nav-link::after {
+            content:''; position:absolute; bottom:0; left:50%; right:50%;
+            height:1px; background:linear-gradient(90deg, var(--green), var(--cyan));
+            transition:left .3s, right .3s; box-shadow:0 0 4px var(--green);
+        }
+        .nav-link:hover { color:#00ffcc; }
+        .nav-link:hover::after { left:0; right:0; }
+
+        .nav-right { display:flex; align-items:center; gap:.6rem; }
+
+        .nav-admin {
+            display:flex; align-items:center; gap:.35rem;
+            font-family:'Orbitron',sans-serif; font-size:.55rem; letter-spacing:.1em;
+            color:var(--dim); text-decoration:none;
+            border:1px solid rgba(0,255,136,.2); padding:.28rem .65rem; border-radius:2px;
+            transition:all .2s; position:relative; overflow:hidden;
+        }
+        .nav-admin::before {
+            content:''; position:absolute; inset:0;
+            background:linear-gradient(90deg, transparent, rgba(0,255,136,.07), transparent);
+            transform:translateX(-100%); transition:transform .4s;
+        }
+        .nav-admin:hover { border-color:var(--green); color:#00ffcc; box-shadow:0 0 10px rgba(0,255,136,.15); }
+        .nav-admin:hover::before { transform:translateX(100%); }
+
+        /* Hamburguesa */
+        .menu-btn {
+            display:flex; flex-direction:column; justify-content:center; align-items:center; gap:5px;
+            width:38px; height:38px;
+            background:rgba(0,255,136,.04); border:1px solid rgba(0,255,136,.25);
+            border-radius:2px; cursor:pointer; padding:0; transition:all .3s;
+        }
+        .menu-btn:hover { border-color:var(--green); box-shadow:0 0 12px rgba(0,255,136,.25); }
+        .menu-btn:hover .bar { box-shadow:0 0 6px var(--cyan); background:var(--cyan); }
+        .bar { height:1.5px; background:var(--green); border-radius:1px; transition:all .3s; box-shadow:0 0 3px rgba(0,255,136,.4); }
+        .bar:nth-child(1){ width:55%; }
+        .bar:nth-child(2){ width:38%; }
+        .bar:nth-child(3){ width:48%; }
+        .menu-btn.active .bar:nth-child(1){ transform:translateY(6.5px) rotate(45deg); width:52%; }
+        .menu-btn.active .bar:nth-child(2){ opacity:0; transform:scaleX(0); }
+        .menu-btn.active .bar:nth-child(3){ transform:translateY(-6.5px) rotate(-45deg); width:52%; }
+
+        /* ── DRAWER ── */
+        .drawer-overlay {
+            position:fixed; inset:0; z-index:250;
+            background:rgba(0,0,0,.75); backdrop-filter:blur(6px);
+            opacity:0; pointer-events:none; transition:opacity .35s;
+        }
+        .drawer-overlay.open { opacity:1; pointer-events:all; }
+
+        .nav-drawer {
+            position:fixed; top:0; right:0; bottom:0;
+            width:min(300px,84vw); z-index:300;
+            background:rgba(0,4,2,.98);
+            border-left:1px solid rgba(0,255,136,.15);
+            transform:translateX(100%);
+            transition:transform .4s cubic-bezier(.4,0,.2,1);
+            display:flex; flex-direction:column;
+            box-shadow:-8px 0 40px rgba(0,0,0,.9);
+        }
+        .nav-drawer::before {
+            content:''; position:absolute; top:0; left:0; right:0; height:2px;
+            background:linear-gradient(90deg, var(--red), var(--cyan), var(--green));
+        }
+        .nav-drawer.open { transform:translateX(0); }
+
+        .drawer-header {
+            display:flex; align-items:center; justify-content:space-between;
+            padding:1.3rem 1.3rem .9rem;
+            border-bottom:1px solid rgba(0,255,136,.08);
+        }
+        .drawer-title {
+            font-family:'Orbitron',sans-serif; font-size:.62rem; letter-spacing:.2em;
+            color:rgba(0,255,136,.4);
+        }
+        .drawer-close {
+            width:30px; height:30px; background:rgba(255,34,68,.08);
+            border:1px solid rgba(255,34,68,.25); border-radius:2px;
+            color:#ff6680; font-size:1rem; cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            transition:all .2s;
+        }
+        .drawer-close:hover { background:rgba(255,34,68,.18); border-color:var(--red); }
+
+        .drawer-nav { flex:1; padding:.5rem 0; overflow-y:auto; }
+
+        .drawer-link {
+            display:flex; align-items:center; gap:.9rem;
+            padding:.8rem 1.3rem;
+            font-family:'Cinzel',serif; font-size:.72rem; letter-spacing:.15em;
+            color:rgba(0,255,136,.55); text-decoration:none; text-transform:uppercase;
+            border-left:2px solid transparent;
+            transition:all .25s; position:relative;
+        }
+        .drawer-link::before {
+            content:''; position:absolute; inset:0;
+            background:linear-gradient(90deg, rgba(0,255,136,.05), transparent);
+            opacity:0; transition:opacity .3s;
+        }
+        .drawer-link:hover { color:#00ffcc; border-left-color:var(--green); padding-left:1.7rem; }
+        .drawer-link:hover::before { opacity:1; }
+        .drawer-link-icon { font-size:1.1rem; flex-shrink:0; }
+        .drawer-link-num {
+            font-family:'Orbitron',sans-serif; font-size:.5rem;
+            color:rgba(0,255,136,.2); margin-left:auto; letter-spacing:.05em;
+        }
+
+        .drawer-footer {
+            padding:.9rem 1.3rem 1.3rem;
+            border-top:1px solid rgba(0,255,136,.07);
+        }
+        .drawer-status {
+            font-family:'Orbitron',sans-serif; font-size:.5rem; letter-spacing:.1em;
+            color:rgba(0,255,136,.25); display:flex; align-items:center; gap:.5rem;
+        }
+        .status-dot {
+            width:5px; height:5px; border-radius:50%;
+            background:var(--green); box-shadow:0 0 5px var(--green);
+            animation:blink 2s ease-in-out infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+        /* ══════════════════════════════
+           HERO — PRESENTACIÓN ÉPICA
+        ══════════════════════════════ */
+        .hero {
+            position:relative; z-index:1;
+            min-height: 80vh;
+            display:flex; flex-direction:column;
+            align-items:center; justify-content:center;
+            padding:3rem 1.5rem 2rem;
+            overflow:hidden;
+        }
+
+        /* Anillo exterior giratorio */
+        .hero::before {
+            content:'';
+            position:absolute;
+            width:min(700px, 120vw); height:min(700px, 120vw);
+            border-radius:50%;
+            border:1px solid rgba(0,255,136,.06);
+            animation:ringRotate 30s linear infinite;
+            pointer-events:none;
+        }
+
+        /* Anillo interior giratorio opuesto */
+        .hero::after {
+            content:'';
+            position:absolute;
+            width:min(500px, 90vw); height:min(500px, 90vw);
+            border-radius:50%;
+            border:1px solid rgba(0,204,255,.05);
+            animation:ringRotate 20s linear infinite reverse;
+            pointer-events:none;
+        }
+
+        @keyframes ringRotate {
+            from { transform:rotate(0deg); }
+            to   { transform:rotate(360deg); }
+        }
+
+        /* Resplandor central */
+        .hero-glow {
+            position:absolute; inset:0; pointer-events:none;
+            background:
+                radial-gradient(ellipse 50% 60% at 50% 50%, rgba(0,255,136,.07) 0%, transparent 70%),
+                radial-gradient(ellipse 30% 30% at 50% 50%, rgba(0,204,255,.05) 0%, transparent 60%);
+            animation:glowPulse 4s ease-in-out infinite alternate;
+        }
+        @keyframes glowPulse {
+            from { opacity:.6; }
+            to   { opacity:1; }
+        }
+
+        /* Líneas de energía horizontales */
+        .hero-lines {
+            position:absolute; inset:0; pointer-events:none; overflow:hidden;
+        }
+        .hero-lines::before,
+        .hero-lines::after {
+            content:'';
+            position:absolute; left:0; right:0; height:1px;
+            background:linear-gradient(90deg, transparent, rgba(0,255,136,.15), transparent);
+        }
+        .hero-lines::before { top:30%; animation:lineFade 3s ease-in-out infinite; }
+        .hero-lines::after  { top:70%; animation:lineFade 3s ease-in-out 1.5s infinite; }
+        @keyframes lineFade {
+            0%,100%{ opacity:0; transform:scaleX(0); }
+            50%    { opacity:1; transform:scaleX(1); }
+        }
+
+        /* LOGO — envuelto en contenedor épico */
+        .logo-stage {
+            position:relative; z-index:2;
+            display:flex; align-items:center; justify-content:center;
+        }
+
+        /* Esquinas HUD del logo */
+        .logo-frame {
+            position:relative; display:inline-block;
+        }
+        .logo-frame::before,
+        .logo-frame::after {
+            content:'';
+            position:absolute; width:20px; height:20px;
+            border-color:var(--green);
+            border-style:solid;
+            transition:all .3s;
+        }
+        .logo-frame::before {
+            top:-8px; left:-8px;
+            border-width:2px 0 0 2px;
+            box-shadow:-2px -2px 8px rgba(0,255,136,.4);
+        }
+        .logo-frame::after {
+            bottom:-8px; right:-8px;
+            border-width:0 2px 2px 0;
+            box-shadow:2px 2px 8px rgba(0,255,136,.4);
+        }
+
+        /* Esquinas adicionales */
+        .logo-corner-tr,
+        .logo-corner-bl {
+            position:absolute; width:20px; height:20px;
+            border-color:var(--cyan); border-style:solid;
+        }
+        .logo-corner-tr { top:-8px; right:-8px; border-width:2px 2px 0 0; box-shadow:2px -2px 8px rgba(0,204,255,.4); }
+        .logo-corner-bl { bottom:-8px; left:-8px; border-width:0 0 2px 2px; box-shadow:-2px 2px 8px rgba(0,204,255,.4); }
+
+        .hero-logo {
+            display:block; max-width:min(560px, 88vw); width:100%; height:auto;
+            position:relative; z-index:1;
+            animation:logoEntrance 1s cubic-bezier(.16,1,.3,1) both, logoPulse 4s ease-in-out 1s infinite alternate;
+            filter:drop-shadow(0 0 25px rgba(0,255,136,.5)) drop-shadow(0 0 50px rgba(0,204,255,.25));
+        }
+
+        @keyframes logoEntrance {
+            from { opacity:0; transform:scale(.85) translateY(30px); filter:brightness(3) drop-shadow(0 0 60px rgba(0,255,136,1)); }
+            to   { opacity:1; transform:scale(1) translateY(0); }
+        }
+
+        @keyframes logoPulse {
+            from { filter:drop-shadow(0 0 20px rgba(0,255,136,.5)) drop-shadow(0 0 40px rgba(0,204,255,.2)); }
+            to   { filter:drop-shadow(0 0 40px rgba(0,255,136,.8)) drop-shadow(0 0 80px rgba(255,34,68,.3)) drop-shadow(0 0 100px rgba(0,204,255,.2)); }
+        }
+
+        /* Indicadores HUD debajo del logo */
+        .hero-hud {
+            position:relative; z-index:2;
+            display:flex; align-items:center; gap:1.5rem;
+            margin-top:2rem;
+            animation:fadeUp .8s .8s ease both;
+        }
+
+        .hud-line {
+            flex:1; height:1px; max-width:80px;
+            background:linear-gradient(90deg, transparent, var(--green));
+            box-shadow:0 0 6px rgba(0,255,136,.4);
+        }
+        .hud-line.right { background:linear-gradient(90deg, var(--green), transparent); }
+
+        .hud-center {
+            display:flex; flex-direction:column; align-items:center; gap:.4rem;
+        }
+
+        .hud-subtitle {
+            font-family:'Crimson Text',serif; font-style:italic;
+            font-size:clamp(.85rem,2.5vw,1.1rem);
+            color:rgba(170,255,221,.7); letter-spacing:.35em; text-transform:uppercase;
+            text-shadow:0 0 10px rgba(0,255,136,.25);
+        }
+
+        .hud-tags {
+            display:flex; gap:.6rem; align-items:center;
+        }
+
+        .hud-tag {
+            font-family:'Orbitron',sans-serif; font-size:.45rem; letter-spacing:.15em;
+            color:rgba(0,255,136,.4); border:1px solid rgba(0,255,136,.15);
+            padding:.15rem .5rem; border-radius:1px;
+        }
+
+        /* ══════════════════════════════
+           SECCIÓN CARDS
+        ══════════════════════════════ */
+        .section-header {
+            position:relative; z-index:1;
+            max-width:1000px; margin:0 auto;
+            padding:0 1.5rem 1.5rem;
+            display:flex; align-items:center; gap:1rem;
+        }
+        .section-header-line {
+            flex:1; height:1px;
+            background:linear-gradient(90deg, rgba(0,255,136,.3), transparent);
+        }
+        .section-header-text {
+            font-family:'Orbitron',sans-serif; font-size:.6rem; letter-spacing:.2em;
+            color:rgba(0,255,136,.35); white-space:nowrap;
+        }
+
+        .container {
+            position:relative; z-index:1;
+            max-width:1000px; margin:0 auto; padding:0 1.5rem 5rem;
+        }
+
+        .grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fill, minmax(280px,1fr));
+            gap:1px;
+            border:1px solid rgba(0,255,136,.1);
+            background:rgba(0,255,136,.08);
+        }
+
+        /* Cards minimalistas épicas */
+        .card {
+            position:relative;
+            display:flex; flex-direction:column; align-items:flex-start;
+            padding:2rem 1.8rem 1.6rem;
+            background:rgba(0,0,0,.92);
+            text-decoration:none; color:inherit; overflow:hidden;
+            transition:background .3s;
+            animation:fadeUp .5s ease both;
+        }
+
+        /* Número de card estilo manga */
+        .card-num {
+            font-family:'Orbitron',sans-serif; font-size:.55rem; letter-spacing:.1em;
+            color:rgba(0,255,136,.15);
+            position:absolute; top:1rem; right:1.2rem;
+            transition:color .3s;
+        }
+
+        /* Línea lateral al hover */
+        .card::before {
+            content:''; position:absolute; top:0; left:0; bottom:0; width:2px;
+            background:linear-gradient(180deg, var(--green), var(--cyan));
+            transform:scaleY(0); transform-origin:bottom;
+            transition:transform .35s cubic-bezier(.4,0,.2,1);
+            box-shadow:2px 0 12px rgba(0,255,136,.4);
+        }
+
+        /* Resplandor de fondo al hover */
+        .card::after {
+            content:''; position:absolute; inset:0;
+            background:linear-gradient(135deg, rgba(0,255,136,.04) 0%, transparent 60%);
+            opacity:0; transition:opacity .3s;
+        }
+
+        .card:hover { background:rgba(5,12,8,.95); }
+        .card:hover::before { transform:scaleY(1); }
+        .card:hover::after  { opacity:1; }
+        .card:hover .card-num { color:rgba(0,255,136,.4); }
+        .card:hover .card-icon { transform:scale(1.15) translateY(-2px); filter:drop-shadow(0 0 16px rgba(0,255,204,.8)); }
+        .card:hover .card-title { color:#00ffcc; text-shadow:0 0 12px rgba(0,255,204,.6); }
+        .card:hover .card-arrow { opacity:1; transform:translateX(0); }
+
+        .card-icon {
+            font-size:2rem; margin-bottom:1.1rem;
+            filter:drop-shadow(0 0 6px rgba(0,255,136,.3));
+            transition:filter .3s, transform .3s;
+        }
+
+        .card-title {
+            font-family:'Cinzel',serif; font-size:.85rem; font-weight:600;
+            letter-spacing:.15em; color:rgba(0,255,204,.8);
+            text-transform:uppercase; margin-bottom:.5rem;
+            transition:color .3s, text-shadow .3s;
+        }
+
+        .card-desc {
+            font-family:'Crimson Text',serif; font-style:italic;
+            font-size:.95rem; color:rgba(170,255,221,.5); line-height:1.55;
+            flex:1;
+        }
+
+        /* Flecha indicador */
+        .card-arrow {
+            margin-top:1.2rem;
+            font-family:'Orbitron',sans-serif; font-size:.5rem; letter-spacing:.15em;
+            color:var(--green); opacity:0; transform:translateX(-8px);
+            transition:opacity .3s, transform .3s;
+        }
+
+        .grid .card:nth-child(1){animation-delay:.06s}
+        .grid .card:nth-child(2){animation-delay:.12s}
+        .grid .card:nth-child(3){animation-delay:.18s}
+        .grid .card:nth-child(4){animation-delay:.24s}
+        .grid .card:nth-child(5){animation-delay:.30s}
+        .grid .card:nth-child(6){animation-delay:.36s}
+
+        @keyframes fadeUp {
+            from{opacity:0;transform:translateY(20px)}
+            to  {opacity:1;transform:translateY(0)}
+        }
+
+        /* ── RESPONSIVE ── */
+        @media(max-width:600px) {
+            .grid{ grid-template-columns:1fr 1fr; }
+            .card{ padding:1.4rem 1.1rem 1.2rem; }
+            .card-icon{ font-size:1.7rem; margin-bottom:.8rem; }
+            .hero{ min-height:65vh; }
+            .hero-hud{ gap:.8rem; }
+            .hud-line{ max-width:40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <!-- ══ NAVBAR ══ -->
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo-wrap">
+                <div class="nav-ki"></div>
+                <span class="nav-logo-text">NAWARU</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="reinos.html"     class="nav-link">Reinos</a>
+                <a href="personajes.html" class="nav-link">Personajes</a>
+                <a href="razas.html"      class="nav-link">Razas</a>
+                <a href="animales.html"   class="nav-link">Animales</a>
+                <a href="mapas.html"      class="nav-link">Mapas</a>
+                <a href="poderes.html"    class="nav-link">Poderes</a>
+            </div>
+
+            <div class="nav-right">
+                <a href="admin.html" class="nav-admin">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    ADMIN
+                </a>
+                <button class="menu-btn" id="menuBtn" aria-label="Menú">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ══ DRAWER ══ -->
+    <div class="nav-drawer" id="navDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">// NAVEGACIÓN</span>
+            <button class="drawer-close" id="drawerClose">&times;</button>
+        </div>
+        <nav class="drawer-nav">
+            <a href="reinos.html"     class="drawer-link"><span class="drawer-link-icon">👑</span>Reinos<span class="drawer-link-num">01</span></a>
+            <a href="personajes.html" class="drawer-link"><span class="drawer-link-icon">👥</span>Personajes<span class="drawer-link-num">02</span></a>
+            <a href="razas.html"      class="drawer-link"><span class="drawer-link-icon">🧬</span>Razas<span class="drawer-link-num">03</span></a>
+            <a href="animales.html"   class="drawer-link"><span class="drawer-link-icon">✨</span>Animales Espirituales<span class="drawer-link-num">04</span></a>
+            <a href="mapas.html"      class="drawer-link"><span class="drawer-link-icon">🗺️</span>Mapas<span class="drawer-link-num">05</span></a>
+            <a href="poderes.html"    class="drawer-link"><span class="drawer-link-icon">🔥</span>Poderes Elementales<span class="drawer-link-num">06</span></a>
+        </nav>
+        <div class="drawer-footer">
+            <div class="drawer-status"><div class="status-dot"></div>NAWARU UNIVERSE — ONLINE</div>
+        </div>
+    </div>
+
+    <!-- ══ HERO ══ -->
+    <header class="hero">
+        <div class="hero-glow"></div>
+        <div class="hero-lines"></div>
+
+        <div class="logo-stage">
+            <div class="logo-frame">
+                <div class="logo-corner-tr"></div>
+                <div class="logo-corner-bl"></div>
+                <img src="SAVE_20260316_174254.jpg" alt="Dragon Ball Nawaru" class="hero-logo">
+            </div>
+        </div>
+
+        <div class="hero-hud">
+            <div class="hud-line"></div>
+            <div class="hud-center">
+                <p class="hud-subtitle">Un universo por descubrir</p>
+                <div class="hud-tags">
+                    <span class="hud-tag">NAWARU</span>
+                    <span class="hud-tag">UNIVERSE</span>
+                    <span class="hud-tag">V1.0</span>
+                </div>
+            </div>
+            <div class="hud-line right"></div>
+        </div>
+    </header>
+
+    <!-- ══ CARDS ══ -->
+    <div class="section-header">
+        <div class="section-header-line"></div>
+        <span class="section-header-text">// EXPLORAR UNIVERSO</span>
+        <div class="section-header-line" style="background:linear-gradient(90deg,transparent,rgba(0,255,136,.3))"></div>
+    </div>
+
+    <main class="container">
+        <div class="grid">
+            <a href="reinos.html" class="card">
+                <span class="card-num">01</span>
+                <div class="card-icon">👑</div>
+                <h3 class="card-title">Reinos</h3>
+                <p class="card-desc">Explora los reinos del mundo</p>
+                <span class="card-arrow">→ VER MÁS</span>
+            </a>
+            <a href="personajes.html" class="card">
+                <span class="card-num">02</span>
+                <div class="card-icon">👥</div>
+                <h3 class="card-title">Personajes</h3>
+                <p class="card-desc">Conoce a los personajes</p>
+                <span class="card-arrow">→ VER MÁS</span>
+            </a>
+            <a href="razas.html" class="card">
+                <span class="card-num">03</span>
+                <div class="card-icon">🧬</div>
+                <h3 class="card-title">Razas</h3>
+                <p class="card-desc">Descubre las razas</p>
+                <span class="card-arrow">→ VER MÁS</span>
+            </a>
+            <a href="animales.html" class="card">
+                <span class="card-num">04</span>
+                <div class="card-icon">✨</div>
+                <h3 class="card-title">Animales Espirituales</h3>
+                <p class="card-desc">Seres místicos</p>
+                <span class="card-arrow">→ VER MÁS</span>
+            </a>
+            <a href="mapas.html" class="card">
+                <span class="card-num">05</span>
+                <div class="card-icon">🗺️</div>
+                <h3 class="card-title">Mapas</h3>
+                <p class="card-desc">Explora el territorio</p>
+                <span class="card-arrow">→ VER MÁS</span>
+            </a>
+            <a href="poderes.html" class="card">
+                <span class="card-num">06</span>
+                <div class="card-icon">🔥</div>
+                <h3 class="card-title">Poderes Elementales</h3>
+                <p class="card-desc">Poderes del universo</p>
+                <span class="card-arrow">→ VER MÁS</span>
+            </a>
+        </div>
+    </main>
+
+    <script>
+        const menuBtn       = document.getElementById('menuBtn');
+        const navDrawer     = document.getElementById('navDrawer');
+        const drawerOverlay = document.getElementById('drawerOverlay');
+        const drawerClose   = document.getElementById('drawerClose');
+
+        function openDrawer()  { navDrawer.classList.add('open'); drawerOverlay.classList.add('open'); menuBtn.classList.add('active'); document.body.style.overflow='hidden'; }
+        function closeDrawer() { navDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); menuBtn.classList.remove('active'); document.body.style.overflow=''; }
+
+        menuBtn.addEventListener('click', () => navDrawer.classList.contains('open') ? closeDrawer() : openDrawer());
+        drawerClose.addEventListener('click', closeDrawer);
+        drawerOverlay.addEventListener('click', closeDrawer);
+        document.addEventListener('keydown', e => { if(e.key==='Escape') closeDrawer(); });
+    </script>
+</body>
+</html>
